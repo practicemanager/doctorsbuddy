@@ -22,6 +22,25 @@ export default function OnboardingPage() {
     if (!user) return;
     setLoading(true);
 
+    // Ensure profile exists (in case trigger didn't fire)
+    const { data: existingProfile } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (!existingProfile) {
+      const { error: insertProfileError } = await supabase
+        .from("profiles")
+        .insert({ user_id: user.id, full_name: user.user_metadata?.full_name || "" });
+      if (insertProfileError) {
+        console.error("Profile creation error:", insertProfileError);
+        toast.error("Failed to create profile: " + insertProfileError.message);
+        setLoading(false);
+        return;
+      }
+    }
+
     const { data: clinic, error: clinicError } = await supabase
       .from("clinics")
       .insert({ name: clinicName, phone: clinicPhone, address: clinicAddress })
@@ -29,7 +48,8 @@ export default function OnboardingPage() {
       .single();
 
     if (clinicError || !clinic) {
-      toast.error("Failed to create clinic");
+      console.error("Clinic creation error:", clinicError);
+      toast.error("Failed to create clinic: " + (clinicError?.message || "Unknown error"));
       setLoading(false);
       return;
     }
@@ -40,7 +60,8 @@ export default function OnboardingPage() {
       .eq("user_id", user.id);
 
     if (profileError) {
-      toast.error("Failed to link clinic to profile");
+      console.error("Profile update error:", profileError);
+      toast.error("Failed to link clinic: " + profileError.message);
     } else {
       await refreshProfile();
       toast.success("Clinic created! Welcome to Dental Buddy.");
