@@ -16,6 +16,7 @@ const navItems = [
   { href: "/billing", label: "Billing", icon: Receipt },
   { href: "/campaigns", label: "Campaigns", icon: Megaphone },
   { href: "/ai-generator", label: "AI Generator", icon: Sparkles },
+  { href: "/settings", label: "Settings", icon: Settings },
   { href: "/whatsapp", label: "WhatsApp", icon: MessageSquare },
 ];
 

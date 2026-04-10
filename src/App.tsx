@@ -13,6 +13,7 @@ import Patients from "./pages/Patients";
 import Appointments from "./pages/Appointments";
 import Billing from "./pages/Billing";
 import Campaigns from "./pages/Campaigns";
+import Settings from "./pages/Settings";
 import AIGenerator from "./pages/AIGenerator";
 import WhatsApp from "./pages/WhatsApp";
 import NotFound from "./pages/NotFound";
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/campaigns" element={<ProtectedRoute><Campaigns /></ProtectedRoute>} />
             <Route path="/ai-generator" element={<ProtectedRoute><AIGenerator /></ProtectedRoute>} />
             <Route path="/whatsapp" element={<ProtectedRoute><WhatsApp /></ProtectedRoute>} />
+            <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
