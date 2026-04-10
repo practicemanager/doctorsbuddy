@@ -184,31 +184,49 @@ export type Database = {
           address: string | null
           created_at: string
           email: string | null
+          facebook_url: string | null
+          google_maps_url: string | null
           id: string
+          instagram_url: string | null
           logo_url: string | null
           name: string
           phone: string | null
+          tiktok_url: string | null
+          twitter_url: string | null
           updated_at: string
+          website: string | null
         }
         Insert: {
           address?: string | null
           created_at?: string
           email?: string | null
+          facebook_url?: string | null
+          google_maps_url?: string | null
           id?: string
+          instagram_url?: string | null
           logo_url?: string | null
           name: string
           phone?: string | null
+          tiktok_url?: string | null
+          twitter_url?: string | null
           updated_at?: string
+          website?: string | null
         }
         Update: {
           address?: string | null
           created_at?: string
           email?: string | null
+          facebook_url?: string | null
+          google_maps_url?: string | null
           id?: string
+          instagram_url?: string | null
           logo_url?: string | null
           name?: string
           phone?: string | null
+          tiktok_url?: string | null
+          twitter_url?: string | null
           updated_at?: string
+          website?: string | null
         }
         Relationships: []
       }
@@ -392,6 +410,53 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "profiles_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vendors: {
+        Row: {
+          category: string | null
+          clinic_id: string
+          contact_name: string | null
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          notes: string | null
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          clinic_id: string
+          contact_name?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          clinic_id?: string
+          contact_name?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vendors_clinic_id_fkey"
             columns: ["clinic_id"]
             isOneToOne: false
             referencedRelation: "clinics"
