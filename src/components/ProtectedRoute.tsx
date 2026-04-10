@@ -1,7 +1,8 @@
+import { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
-const Index = () => {
+export default function ProtectedRoute({ children }: { children: ReactNode }) {
   const { session, profile, loading } = useAuth();
 
   if (loading) {
@@ -14,7 +15,5 @@ const Index = () => {
 
   if (!session) return <Navigate to="/auth" replace />;
   if (!profile?.clinic_id) return <Navigate to="/onboarding" replace />;
-  return <Navigate to="/dashboard" replace />;
-};
-
-export default Index;
+  return <>{children}</>;
+}
