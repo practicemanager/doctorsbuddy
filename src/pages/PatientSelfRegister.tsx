@@ -29,18 +29,20 @@ export default function PatientSelfRegister() {
     }
     setLoading(true);
 
+    // Generate patient ID client-side to avoid needing SELECT permission
+    const patientId = crypto.randomUUID();
+
     // Create patient
-    const { data: patient, error: patientError } = await supabase
+    const { error: patientError } = await supabase
       .from("patients")
       .insert({
+        id: patientId,
         clinic_id: clinicId,
         full_name: fullName,
         phone: phone || null,
         email: email || null,
         date_of_birth: dob || null,
-      })
-      .select("id")
-      .single();
+      });
 
     if (patientError) {
       toast.error("Registration failed: " + patientError.message);
@@ -63,7 +65,7 @@ export default function PatientSelfRegister() {
       .from("queue_tokens")
       .insert({
         clinic_id: clinicId,
-        patient_id: patient.id,
+        patient_id: patientId,
         token_number: nextToken,
         queue_date: today,
         status: "waiting",
