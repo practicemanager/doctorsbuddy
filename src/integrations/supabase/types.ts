@@ -19,6 +19,8 @@ export type Database = {
           clinic_id: string
           created_at: string
           duration_minutes: number
+          google_event_id: string | null
+          google_sync_status: string | null
           id: string
           notes: string | null
           patient_id: string
@@ -32,6 +34,8 @@ export type Database = {
           clinic_id: string
           created_at?: string
           duration_minutes?: number
+          google_event_id?: string | null
+          google_sync_status?: string | null
           id?: string
           notes?: string | null
           patient_id: string
@@ -45,6 +49,8 @@ export type Database = {
           clinic_id?: string
           created_at?: string
           duration_minutes?: number
+          google_event_id?: string | null
+          google_sync_status?: string | null
           id?: string
           notes?: string | null
           patient_id?: string
@@ -284,6 +290,56 @@ export type Database = {
             foreignKeyName: "expenses_clinic_id_fkey"
             columns: ["clinic_id"]
             isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      google_integrations: {
+        Row: {
+          access_token: string
+          calendar_id: string | null
+          clinic_id: string
+          connected_email: string | null
+          created_at: string | null
+          id: string
+          last_sync_at: string | null
+          refresh_token: string
+          sync_enabled: boolean | null
+          token_expires_at: string
+          updated_at: string | null
+        }
+        Insert: {
+          access_token: string
+          calendar_id?: string | null
+          clinic_id: string
+          connected_email?: string | null
+          created_at?: string | null
+          id?: string
+          last_sync_at?: string | null
+          refresh_token: string
+          sync_enabled?: boolean | null
+          token_expires_at: string
+          updated_at?: string | null
+        }
+        Update: {
+          access_token?: string
+          calendar_id?: string | null
+          clinic_id?: string
+          connected_email?: string | null
+          created_at?: string | null
+          id?: string
+          last_sync_at?: string | null
+          refresh_token?: string
+          sync_enabled?: boolean | null
+          token_expires_at?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "google_integrations_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: true
             referencedRelation: "clinics"
             referencedColumns: ["id"]
           },
