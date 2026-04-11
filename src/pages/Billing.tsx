@@ -12,7 +12,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "sonner";
-import { Plus, Receipt } from "lucide-react";
+import { Plus, Receipt, FileText } from "lucide-react";
+import InvoiceReceipt from "@/components/billing/InvoiceReceipt";
 
 const statusColors: Record<string, string> = {
   draft: "bg-muted text-muted-foreground",
@@ -26,6 +27,7 @@ export default function BillingPage() {
   const { clinicId } = useAuth();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
+  const [receiptInvoice, setReceiptInvoice] = useState<any>(null);
   const [form, setForm] = useState({ patient_id: "", amount: "", due_date: "", notes: "" });
 
   const { data: patients } = useQuery({
