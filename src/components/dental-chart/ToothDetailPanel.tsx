@@ -100,6 +100,30 @@ export default function ToothDetailPanel({
     onError: (e: any) => toast.error(e.message),
   });
 
+  const deductMaterials = async (treatmentName: string, treatmentId: string) => {
+    // Fetch mappings for this treatment
+    const { data: mappings } = await supabase
+      .from("treatment_material_mappings")
+      .select("inventory_item_id, quantity_needed")
+      .eq("clinic_id", clinicId)
+      .eq("treatment_name", treatmentName);
+
+    if (mappings && mappings.length > 0) {
+      for (const m of mappings) {
+        try {
+          await supabase.rpc("deduct_inventory", {
+            p_item_id: m.inventory_item_id,
+            p_quantity: m.quantity_needed,
+            p_treatment_id: treatmentId,
+          });
+        } catch (err: any) {
+          toast.error(`Stock deduction failed: ${err.message}`);
+        }
+      }
+      toast.success("Inventory auto-deducted for linked materials");
+    }
+  };
+
   const addTreatment = useMutation({
     mutationFn: async () => {
       const recordId = await ensureToothRecord();
@@ -117,6 +141,21 @@ export default function ToothDetailPanel({
       setShowTreatmentForm(false);
       setTreatmentForm({ treatment_name: "", status: "planned", cost: "", notes: "" });
       toast.success("Treatment added");
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
+
+  const updateTreatmentStatus = useMutation({
+    mutationFn: async ({ id, newStatus, treatmentName }: { id: string; newStatus: string; treatmentName: string }) => {
+      const { error } = await supabase.from("tooth_treatments").update({ status: newStatus as any }).eq("id", id);
+      if (error) throw error;
+      if (newStatus === "completed") {
+        await deductMaterials(treatmentName, id);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tooth-treatments"] });
+      toast.success("Treatment status updated");
     },
     onError: (e: any) => toast.error(e.message),
   });
@@ -236,9 +275,19 @@ export default function ToothDetailPanel({
               <div key={t.id} className="p-2 rounded bg-muted space-y-1">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium">{t.treatment_name}</span>
-                  <Badge variant={t.status === "completed" ? "default" : "outline"} className="text-xs">
-                    {t.status.replace("_", " ")}
-                  </Badge>
+                  <Select
+                    value={t.status}
+                    onValueChange={v => updateTreatmentStatus.mutate({ id: t.id, newStatus: v, treatmentName: t.treatment_name })}
+                  >
+                    <SelectTrigger className="h-6 w-[110px] text-xs">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="planned">Planned</SelectItem>
+                      <SelectItem value="in_progress">In Progress</SelectItem>
+                      <SelectItem value="completed">Completed</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 {t.cost > 0 && <p className="text-xs font-medium">₹{Number(t.cost).toLocaleString()}</p>}
                 {t.notes && <p className="text-xs text-muted-foreground">{t.notes}</p>}

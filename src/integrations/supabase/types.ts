@@ -744,6 +744,48 @@ export type Database = {
           },
         ]
       }
+      treatment_material_mappings: {
+        Row: {
+          clinic_id: string
+          created_at: string
+          id: string
+          inventory_item_id: string
+          quantity_needed: number
+          treatment_name: string
+        }
+        Insert: {
+          clinic_id: string
+          created_at?: string
+          id?: string
+          inventory_item_id: string
+          quantity_needed?: number
+          treatment_name: string
+        }
+        Update: {
+          clinic_id?: string
+          created_at?: string
+          id?: string
+          inventory_item_id?: string
+          quantity_needed?: number
+          treatment_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "treatment_material_mappings_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "treatment_material_mappings_inventory_item_id_fkey"
+            columns: ["inventory_item_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vendors: {
         Row: {
           category: string | null
