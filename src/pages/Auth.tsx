@@ -11,7 +11,9 @@ import { Stethoscope, Mail, Lock, User } from "lucide-react";
 export default function AuthPage() {
   const navigate = useNavigate();
   const { session, profile, loading: authLoading } = useAuth();
-  const [mode, setMode] = useState<"login" | "signup">("login");
+  const searchParams = new URLSearchParams(window.location.search);
+  const defaultMode = searchParams.get("mode") === "login" ? "login" : "signup";
+  const [mode, setMode] = useState<"login" | "signup">(defaultMode);
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
