@@ -173,18 +173,35 @@ function PatientProfile({ patient, clinicId, onBack }: { patient: any; clinicId:
                     <TableHead>Tooth</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Cost</TableHead>
+                    <TableHead>Completed</TableHead>
                     <TableHead>Date</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {!treatments.length ? (
-                    <TableRow><TableCell colSpan={5} className="text-center py-6 text-muted-foreground">No treatments recorded</TableCell></TableRow>
+                    <TableRow><TableCell colSpan={6} className="text-center py-6 text-muted-foreground">No treatments recorded</TableCell></TableRow>
                   ) : treatments.map((t: any) => (
                     <TableRow key={t.id}>
                       <TableCell className="font-medium">{t.treatment_name}</TableCell>
                       <TableCell>#{t.tooth_records?.tooth_number}</TableCell>
-                      <TableCell><Badge variant="secondary" className="text-xs">{t.status}</Badge></TableCell>
+                      <TableCell>
+                        <Select value={t.status} onValueChange={v => updateTreatmentStatus.mutate({ id: t.id, status: v })}>
+                          <SelectTrigger className="w-32 h-7 text-xs">
+                            <Badge className={`${TREATMENT_STATUS_COLORS[t.status] || ""} text-xs`} variant="secondary">
+                              {t.status?.replace("_", " ")}
+                            </Badge>
+                          </SelectTrigger>
+                          <SelectContent>
+                            {["planned", "in_progress", "completed", "cancelled"].map(s =>
+                              <SelectItem key={s} value={s}>{s.replace("_", " ")}</SelectItem>
+                            )}
+                          </SelectContent>
+                        </Select>
+                      </TableCell>
                       <TableCell>{t.cost ? `₹${Number(t.cost).toLocaleString()}` : "—"}</TableCell>
+                      <TableCell className="text-muted-foreground text-xs">
+                        {t.performed_at ? new Date(t.performed_at).toLocaleDateString() : "—"}
+                      </TableCell>
                       <TableCell className="text-muted-foreground">{new Date(t.created_at).toLocaleDateString()}</TableCell>
                     </TableRow>
                   ))}
