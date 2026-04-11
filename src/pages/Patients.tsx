@@ -133,6 +133,14 @@ function PatientProfile({ patient, clinicId, onBack }: { patient: any; clinicId:
           </div>
         </TabsContent>
 
+        <TabsContent value="medical-history" className="mt-4">
+          <MedicalHistoryTab patientId={patient.id} clinicId={clinicId} />
+        </TabsContent>
+
+        <TabsContent value="visit-history" className="mt-4">
+          <VisitHistoryTab patientId={patient.id} />
+        </TabsContent>
+
         <TabsContent value="treatments" className="mt-4">
           <Card className="shadow-card border-0">
             <CardContent className="p-0">
