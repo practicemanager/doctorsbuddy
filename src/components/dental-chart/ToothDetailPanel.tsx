@@ -100,6 +100,30 @@ export default function ToothDetailPanel({
     onError: (e: any) => toast.error(e.message),
   });
 
+  const deductMaterials = async (treatmentName: string, treatmentId: string) => {
+    // Fetch mappings for this treatment
+    const { data: mappings } = await supabase
+      .from("treatment_material_mappings")
+      .select("inventory_item_id, quantity_needed")
+      .eq("clinic_id", clinicId)
+      .eq("treatment_name", treatmentName);
+
+    if (mappings && mappings.length > 0) {
+      for (const m of mappings) {
+        try {
+          await supabase.rpc("deduct_inventory", {
+            p_item_id: m.inventory_item_id,
+            p_quantity: m.quantity_needed,
+            p_treatment_id: treatmentId,
+          });
+        } catch (err: any) {
+          toast.error(`Stock deduction failed: ${err.message}`);
+        }
+      }
+      toast.success("Inventory auto-deducted for linked materials");
+    }
+  };
+
   const addTreatment = useMutation({
     mutationFn: async () => {
       const recordId = await ensureToothRecord();
@@ -117,6 +141,21 @@ export default function ToothDetailPanel({
       setShowTreatmentForm(false);
       setTreatmentForm({ treatment_name: "", status: "planned", cost: "", notes: "" });
       toast.success("Treatment added");
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
+
+  const updateTreatmentStatus = useMutation({
+    mutationFn: async ({ id, newStatus, treatmentName }: { id: string; newStatus: string; treatmentName: string }) => {
+      const { error } = await supabase.from("tooth_treatments").update({ status: newStatus as any }).eq("id", id);
+      if (error) throw error;
+      if (newStatus === "completed") {
+        await deductMaterials(treatmentName, id);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tooth-treatments"] });
+      toast.success("Treatment status updated");
     },
     onError: (e: any) => toast.error(e.message),
   });
