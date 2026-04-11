@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Plus, ChevronLeft, ChevronRight, CalendarDays, Clock, List } from "lucide-react";
+import { Plus, ChevronLeft, ChevronRight, CalendarDays, Clock, List, RefreshCw } from "lucide-react";
 import { format, addDays, startOfWeek, endOfWeek, isSameDay, addWeeks, subWeeks, subDays } from "date-fns";
 
 const statusColors: Record<string, string> = {
@@ -86,6 +86,18 @@ export default function AppointmentsPage() {
     onError: (e: any) => toast.error(e.message),
   });
 
+  const syncToGoogle = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.functions.invoke("google-calendar-sync", {
+        body: { action: "sync_all" },
+      });
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data: any) => toast.success(`Synced ${data.synced} appointments to Google Calendar`),
+    onError: () => toast.error("Google Calendar not connected. Go to Settings → Integrations to connect."),
+  });
+
   const updateStatus = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
       const { error } = await supabase.from("appointments").update({ status: status as any }).eq("id", id);
@@ -150,6 +162,10 @@ export default function AppointmentsPage() {
                 <TabsTrigger value="list" className="text-xs h-7 px-3 gap-1"><List className="h-3 w-3" />List</TabsTrigger>
               </TabsList>
             </Tabs>
+            <Button variant="outline" size="sm" onClick={() => syncToGoogle.mutate()} disabled={syncToGoogle.isPending}>
+              <RefreshCw className={`mr-1 h-4 w-4 ${syncToGoogle.isPending ? "animate-spin" : ""}`} />
+              Sync to Google
+            </Button>
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
                 <Button size="sm"><Plus className="mr-1 h-4 w-4" /> New</Button>
