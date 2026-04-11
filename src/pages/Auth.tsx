@@ -10,22 +10,22 @@ import { Stethoscope, Mail, Lock, User } from "lucide-react";
 
 export default function AuthPage() {
   const navigate = useNavigate();
-  const { session, profile } = useAuth();
+  const { session, profile, loading: authLoading } = useAuth();
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
 
-  // Redirect if already authenticated
-  if (session && profile?.clinic_id) {
-    navigate("/dashboard", { replace: true });
-    return null;
-  }
-  if (session && !profile?.clinic_id) {
-    navigate("/onboarding", { replace: true });
-    return null;
-  }
+  useEffect(() => {
+    if (!authLoading && session) {
+      if (profile?.clinic_id) {
+        navigate("/dashboard", { replace: true });
+      } else {
+        navigate("/onboarding", { replace: true });
+      }
+    }
+  }, [session, profile, authLoading, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
