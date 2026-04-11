@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,9 +11,10 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "sonner";
-import { Plus, Search, Users } from "lucide-react";
+import { Plus, Search, Users, Smile } from "lucide-react";
 
 export default function PatientsPage() {
+  const navigate = useNavigate();
   const { clinicId } = useAuth();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
@@ -105,19 +107,25 @@ export default function PatientsPage() {
                   <TableHead>Email</TableHead>
                   <TableHead>Phone</TableHead>
                   <TableHead>DOB</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {isLoading ? (
-                  <TableRow><TableCell colSpan={4} className="text-center py-8 text-muted-foreground">Loading...</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={5} className="text-center py-8 text-muted-foreground">Loading...</TableCell></TableRow>
                 ) : !patients?.length ? (
-                  <TableRow><TableCell colSpan={4} className="text-center py-8 text-muted-foreground">No patients yet</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={5} className="text-center py-8 text-muted-foreground">No patients yet</TableCell></TableRow>
                 ) : patients.map(p => (
                   <TableRow key={p.id}>
                     <TableCell className="font-medium">{p.full_name}</TableCell>
                     <TableCell>{p.email || "—"}</TableCell>
                     <TableCell>{p.phone || "—"}</TableCell>
                     <TableCell>{p.date_of_birth || "—"}</TableCell>
+                    <TableCell>
+                      <Button size="sm" variant="outline" onClick={() => navigate(`/dental-chart/${p.id}`)}>
+                        <Smile className="h-3 w-3 mr-1" /> Chart
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
