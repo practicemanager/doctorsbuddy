@@ -104,13 +104,9 @@ export default function InvoiceReceipt({ invoice, clinic, patient, items = [] }:
             {invoice.status === "paid" ? "Amount Paid" : "Amount Due"}
           </div>
           <div style={{ fontSize: 28, fontWeight: "bold", color: invoice.status === "paid" ? "#16a34a" : "#d97706" }}>
-            ₹{amount.toLocaleString("en-IN")}
+            ₹{totalAmount.toLocaleString("en-IN")}
           </div>
         </div>
-
-        {/* Items table if available */}
-        {items.length > 0 && (
-          <>
             <h2 style={{ fontSize: 13, borderBottom: "1px solid #ccc", paddingBottom: 4 }}>Treatment Details</h2>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
               <thead>
