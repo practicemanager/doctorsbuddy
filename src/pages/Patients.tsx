@@ -17,8 +17,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import {
   Plus, Search, Users, Smile, CalendarDays, ChevronLeft,
-  Phone, Mail, MapPin, FileText, Clock, Activity, User2
+  Phone, Mail, MapPin, FileText, Clock, Activity, User2, HeartPulse, History
 } from "lucide-react";
+import MedicalHistoryTab from "@/components/patients/MedicalHistoryTab";
+import VisitHistoryTab from "@/components/patients/VisitHistoryTab";
 
 function PatientProfile({ patient, clinicId, onBack }: { patient: any; clinicId: string; onBack: () => void }) {
   const navigate = useNavigate();
