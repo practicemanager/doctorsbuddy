@@ -786,6 +786,56 @@ export type Database = {
           },
         ]
       }
+      treatment_pricing: {
+        Row: {
+          base_price: number
+          clinic_id: string
+          created_at: string
+          doctor_fee: number
+          id: string
+          lab_cost: number
+          material_cost: number
+          notes: string | null
+          other_cost: number
+          treatment_name: string
+          updated_at: string
+        }
+        Insert: {
+          base_price?: number
+          clinic_id: string
+          created_at?: string
+          doctor_fee?: number
+          id?: string
+          lab_cost?: number
+          material_cost?: number
+          notes?: string | null
+          other_cost?: number
+          treatment_name: string
+          updated_at?: string
+        }
+        Update: {
+          base_price?: number
+          clinic_id?: string
+          created_at?: string
+          doctor_fee?: number
+          id?: string
+          lab_cost?: number
+          material_cost?: number
+          notes?: string | null
+          other_cost?: number
+          treatment_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "treatment_pricing_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vendors: {
         Row: {
           category: string | null
