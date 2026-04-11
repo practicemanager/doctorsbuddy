@@ -36,7 +36,16 @@ export default function PatientsPage() {
   const addPatient = useMutation({
     mutationFn: async () => {
       if (!clinicId) throw new Error("No clinic");
-      const { error } = await supabase.from("patients").insert({ ...form, clinic_id: clinicId });
+      const payload = {
+        full_name: form.full_name,
+        clinic_id: clinicId,
+        email: form.email || null,
+        phone: form.phone || null,
+        date_of_birth: form.date_of_birth || null,
+        address: form.address || null,
+        notes: form.notes || null,
+      };
+      const { error } = await supabase.from("patients").insert(payload);
       if (error) throw error;
     },
     onSuccess: () => {
