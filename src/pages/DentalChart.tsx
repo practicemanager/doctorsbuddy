@@ -117,7 +117,7 @@ export default function DentalChartPage() {
   }, [savePrescription]);
 
   // Prescription items for summary
-  const { data: prescriptionItems = [] } = useQuery({
+  const { data: prescriptionItems = [], refetch: refetchItems } = useQuery({
     queryKey: ["prescription-items-all", prescriptionId],
     queryFn: async () => {
       const { data } = await supabase
@@ -175,7 +175,7 @@ export default function DentalChartPage() {
         </div>
 
         {/* Main workflow tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <Tabs value={activeTab} onValueChange={v => { setActiveTab(v); if (v === "summary") refetchItems(); }}>
           <TabsList className="w-full">
             <TabsTrigger value="chart" className="flex-1 gap-1"><Stethoscope className="h-3 w-3" />Examine</TabsTrigger>
             <TabsTrigger value="summary" className="flex-1 gap-1"><FileText className="h-3 w-3" />Prescription</TabsTrigger>
