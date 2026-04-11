@@ -396,6 +396,41 @@ export default function SettingsPage() {
           <TabsContent value="vendors">
             <VendorsTab clinicId={clinicId} />
           </TabsContent>
+
+          <TabsContent value="qr">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <QrCode className="h-5 w-5" />
+                  Patient Self-Registration QR Code
+                </CardTitle>
+                <CardDescription>
+                  Print or display this QR code in your clinic. Patients scan it to register themselves and get a queue token automatically.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="flex flex-col items-center gap-4">
+                <div className="p-6 bg-white rounded-xl border shadow-sm">
+                  <QRCodeSVG
+                    value={`${window.location.origin}/register?clinic=${clinicId}`}
+                    size={250}
+                    level="H"
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground text-center max-w-sm break-all">
+                  {`${window.location.origin}/register?clinic=${clinicId}`}
+                </p>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    navigator.clipboard.writeText(`${window.location.origin}/register?clinic=${clinicId}`);
+                    toast.success("Registration link copied!");
+                  }}
+                >
+                  Copy Registration Link
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
         </Tabs>
       </div>
     </DashboardLayout>
