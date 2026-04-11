@@ -31,6 +31,7 @@ const TREATMENT_STATUS_COLORS: Record<string, string> = {
 
 function PatientProfile({ patient, clinicId, onBack }: { patient: any; clinicId: string; onBack: () => void }) {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { data: appointments = [] } = useQuery({
     queryKey: ["patient-appointments", patient.id],
@@ -49,6 +50,28 @@ function PatientProfile({ patient, clinicId, onBack }: { patient: any; clinicId:
         .eq("tooth_records.patient_id", patient.id)
         .order("created_at", { ascending: false }).limit(20);
       return data ?? [];
+    },
+  });
+
+  const { data: invoices = [] } = useQuery({
+    queryKey: ["patient-invoices", patient.id],
+    queryFn: async () => {
+      const { data } = await supabase.from("invoices").select("*")
+        .eq("patient_id", patient.id).order("created_at", { ascending: false }).limit(10);
+      return data ?? [];
+    },
+  });
+
+  const updateTreatmentStatus = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+      const update: any = { status: status as any };
+      if (status === "completed") update.performed_at = new Date().toISOString();
+      const { error } = await supabase.from("tooth_treatments").update(update).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["patient-treatments"] });
+      toast.success("Treatment status updated!");
     },
   });
 
