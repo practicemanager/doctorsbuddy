@@ -230,6 +230,65 @@ export type Database = {
         }
         Relationships: []
       }
+      expenses: {
+        Row: {
+          amount: number
+          category: string
+          clinic_id: string
+          created_at: string
+          description: string
+          expense_date: string
+          gst_amount: number | null
+          gst_rate: number
+          id: string
+          notes: string | null
+          payment_method: string | null
+          reference_number: string | null
+          updated_at: string
+          vendor_name: string | null
+        }
+        Insert: {
+          amount?: number
+          category?: string
+          clinic_id: string
+          created_at?: string
+          description: string
+          expense_date?: string
+          gst_amount?: number | null
+          gst_rate?: number
+          id?: string
+          notes?: string | null
+          payment_method?: string | null
+          reference_number?: string | null
+          updated_at?: string
+          vendor_name?: string | null
+        }
+        Update: {
+          amount?: number
+          category?: string
+          clinic_id?: string
+          created_at?: string
+          description?: string
+          expense_date?: string
+          gst_amount?: number | null
+          gst_rate?: number
+          id?: string
+          notes?: string | null
+          payment_method?: string | null
+          reference_number?: string | null
+          updated_at?: string
+          vendor_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "expenses_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       inventory_items: {
         Row: {
           category: string | null

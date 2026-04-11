@@ -20,6 +20,7 @@ import DentalChart from "./pages/DentalChart";
 import Queue from "./pages/Queue";
 import Inventory from "./pages/Inventory";
 import TreatmentCosting from "./pages/TreatmentCosting";
+import Finance from "./pages/Finance";
 import PatientSelfRegister from "./pages/PatientSelfRegister";
 import NotFound from "./pages/NotFound";
 
@@ -48,6 +49,7 @@ const App = () => (
             <Route path="/queue" element={<ProtectedRoute><Queue /></ProtectedRoute>} />
             <Route path="/inventory" element={<ProtectedRoute><Inventory /></ProtectedRoute>} />
             <Route path="/treatment-costing" element={<ProtectedRoute><TreatmentCosting /></ProtectedRoute>} />
+            <Route path="/finance" element={<ProtectedRoute><Finance /></ProtectedRoute>} />
             <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
