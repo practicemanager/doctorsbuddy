@@ -160,13 +160,13 @@ export default function BillingPage() {
           <Card className="shadow-card border-0">
             <CardContent className="p-6">
               <p className="text-sm text-muted-foreground">Pending</p>
-              <p className="mt-1 text-2xl font-bold font-heading text-warning">${totalPending.toFixed(2)}</p>
+              <p className="mt-1 text-2xl font-bold font-heading text-warning">₹{totalPending.toLocaleString()}</p>
             </CardContent>
           </Card>
           <Card className="shadow-card border-0">
             <CardContent className="p-6">
               <p className="text-sm text-muted-foreground">Collected</p>
-              <p className="mt-1 text-2xl font-bold font-heading text-success">${totalPaid.toFixed(2)}</p>
+              <p className="mt-1 text-2xl font-bold font-heading text-success">₹{totalPaid.toLocaleString()}</p>
             </CardContent>
           </Card>
         </div>
