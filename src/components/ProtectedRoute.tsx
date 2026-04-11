@@ -17,3 +17,18 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
   if (!profile?.clinic_id) return <Navigate to="/onboarding" replace />;
   return <>{children}</>;
 }
+
+export function AuthOnlyRoute({ children }: { children: ReactNode }) {
+  const { session, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="animate-pulse text-muted-foreground">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!session) return <Navigate to="/auth" replace />;
+  return <>{children}</>;
+}
