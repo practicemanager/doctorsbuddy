@@ -54,6 +54,25 @@ export default function BillingPage() {
     enabled: !!clinicId,
   });
 
+  const { data: clinic } = useQuery({
+    queryKey: ["clinic", clinicId],
+    queryFn: async () => {
+      const { data } = await supabase.from("clinics").select("*").eq("id", clinicId!).single();
+      return data;
+    },
+    enabled: !!clinicId,
+  });
+
+  const { data: invoiceItems = [] } = useQuery({
+    queryKey: ["invoice-items", receiptInvoice?.id],
+    queryFn: async () => {
+      if (!receiptInvoice?.id) return [];
+      const { data } = await supabase.from("invoice_items").select("*").eq("invoice_id", receiptInvoice.id);
+      return data ?? [];
+    },
+    enabled: !!receiptInvoice?.id,
+  });
+
   const addInvoice = useMutation({
     mutationFn: async () => {
       if (!clinicId) throw new Error("No clinic");
