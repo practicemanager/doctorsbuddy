@@ -35,6 +35,7 @@ function StatCard({ title, value, icon: Icon, subtitle, color }: {
 
 export default function DashboardPage() {
   const { clinicId } = useAuth();
+  const navigate = useNavigate();
   const today = new Date().toISOString().split("T")[0];
 
   const { data: patientCount = 0 } = useQuery({
