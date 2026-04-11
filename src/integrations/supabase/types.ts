@@ -549,6 +549,126 @@ export type Database = {
           },
         ]
       }
+      prescription_items: {
+        Row: {
+          condition: string | null
+          cost: number | null
+          created_at: string
+          id: string
+          notes: string | null
+          prescription_id: string
+          tooth_number: number
+          treatment: string | null
+          treatment_status: string | null
+        }
+        Insert: {
+          condition?: string | null
+          cost?: number | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          prescription_id: string
+          tooth_number: number
+          treatment?: string | null
+          treatment_status?: string | null
+        }
+        Update: {
+          condition?: string | null
+          cost?: number | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          prescription_id?: string
+          tooth_number?: number
+          treatment?: string | null
+          treatment_status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prescription_items_prescription_id_fkey"
+            columns: ["prescription_id"]
+            isOneToOne: false
+            referencedRelation: "prescriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prescriptions: {
+        Row: {
+          alignment_condition: string | null
+          chart_type: string
+          chief_complaint: string | null
+          clinic_id: string
+          created_at: string
+          diagnosis_notes: string | null
+          doctor_id: string | null
+          doctor_notes: string | null
+          gum_condition: string | null
+          id: string
+          medications: Json | null
+          patient_id: string
+          status: string
+          treatment_plan: string | null
+          updated_at: string
+        }
+        Insert: {
+          alignment_condition?: string | null
+          chart_type?: string
+          chief_complaint?: string | null
+          clinic_id: string
+          created_at?: string
+          diagnosis_notes?: string | null
+          doctor_id?: string | null
+          doctor_notes?: string | null
+          gum_condition?: string | null
+          id?: string
+          medications?: Json | null
+          patient_id: string
+          status?: string
+          treatment_plan?: string | null
+          updated_at?: string
+        }
+        Update: {
+          alignment_condition?: string | null
+          chart_type?: string
+          chief_complaint?: string | null
+          clinic_id?: string
+          created_at?: string
+          diagnosis_notes?: string | null
+          doctor_id?: string | null
+          doctor_notes?: string | null
+          gum_condition?: string | null
+          id?: string
+          medications?: Json | null
+          patient_id?: string
+          status?: string
+          treatment_plan?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prescriptions_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prescriptions_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prescriptions_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
