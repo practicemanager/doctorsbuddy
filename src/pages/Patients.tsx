@@ -22,6 +22,13 @@ import {
 import MedicalHistoryTab from "@/components/patients/MedicalHistoryTab";
 import VisitHistoryTab from "@/components/patients/VisitHistoryTab";
 
+const TREATMENT_STATUS_COLORS: Record<string, string> = {
+  planned: "bg-primary/10 text-primary border-primary/30",
+  in_progress: "bg-warning/10 text-warning border-warning/30",
+  completed: "bg-success/10 text-success border-success/30",
+  cancelled: "bg-destructive/10 text-destructive border-destructive/30",
+};
+
 function PatientProfile({ patient, clinicId, onBack }: { patient: any; clinicId: string; onBack: () => void }) {
   const navigate = useNavigate();
 
