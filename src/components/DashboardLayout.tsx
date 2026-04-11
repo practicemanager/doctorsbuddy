@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard, Users, CalendarDays, Receipt, Megaphone,
-  Sparkles, MessageSquare, Settings, LogOut, Smile, ChevronLeft, ChevronRight, ListOrdered
+  Sparkles, MessageSquare, Settings, LogOut, Smile, ChevronLeft, ChevronRight, ListOrdered, Package
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -14,6 +14,7 @@ const navItems = [
   { href: "/patients", label: "Patients", icon: Users },
   { href: "/appointments", label: "Appointments", icon: CalendarDays },
   { href: "/queue", label: "Queue", icon: ListOrdered },
+  { href: "/inventory", label: "Inventory", icon: Package },
   { href: "/billing", label: "Billing", icon: Receipt },
   { href: "/campaigns", label: "Campaigns", icon: Megaphone },
   { href: "/ai-generator", label: "AI Generator", icon: Sparkles },
