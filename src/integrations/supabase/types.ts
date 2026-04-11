@@ -1219,7 +1219,47 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      google_integrations_safe: {
+        Row: {
+          calendar_id: string | null
+          clinic_id: string | null
+          connected_email: string | null
+          created_at: string | null
+          id: string | null
+          last_sync_at: string | null
+          sync_enabled: boolean | null
+          updated_at: string | null
+        }
+        Insert: {
+          calendar_id?: string | null
+          clinic_id?: string | null
+          connected_email?: string | null
+          created_at?: string | null
+          id?: string | null
+          last_sync_at?: string | null
+          sync_enabled?: boolean | null
+          updated_at?: string | null
+        }
+        Update: {
+          calendar_id?: string | null
+          clinic_id?: string | null
+          connected_email?: string | null
+          created_at?: string | null
+          id?: string | null
+          last_sync_at?: string | null
+          sync_enabled?: boolean | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "google_integrations_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: true
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       create_clinic_and_link: {
