@@ -938,6 +938,8 @@ export type Database = {
         | "missing"
         | "treated"
         | "needs_treatment"
+        | "under_observation"
+        | "restored"
       treatment_status: "planned" | "in_progress" | "completed" | "cancelled"
       user_role:
         | "owner"
@@ -1105,6 +1107,8 @@ export const Constants = {
         "missing",
         "treated",
         "needs_treatment",
+        "under_observation",
+        "restored",
       ],
       treatment_status: ["planned", "in_progress", "completed", "cancelled"],
       user_role: ["owner", "dentist", "hygienist", "receptionist", "assistant"],
