@@ -16,6 +16,7 @@ import Campaigns from "./pages/Campaigns";
 import Settings from "./pages/Settings";
 import AIGenerator from "./pages/AIGenerator";
 import WhatsApp from "./pages/WhatsApp";
+import DentalChart from "./pages/DentalChart";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/campaigns" element={<ProtectedRoute><Campaigns /></ProtectedRoute>} />
             <Route path="/ai-generator" element={<ProtectedRoute><AIGenerator /></ProtectedRoute>} />
             <Route path="/whatsapp" element={<ProtectedRoute><WhatsApp /></ProtectedRoute>} />
+            <Route path="/dental-chart/:patientId" element={<ProtectedRoute><DentalChart /></ProtectedRoute>} />
             <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>

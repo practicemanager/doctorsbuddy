@@ -417,6 +417,146 @@ export type Database = {
           },
         ]
       }
+      tooth_conditions: {
+        Row: {
+          condition_name: string
+          created_at: string
+          diagnosed_at: string | null
+          id: string
+          notes: string | null
+          severity: string | null
+          tooth_record_id: string
+        }
+        Insert: {
+          condition_name: string
+          created_at?: string
+          diagnosed_at?: string | null
+          id?: string
+          notes?: string | null
+          severity?: string | null
+          tooth_record_id: string
+        }
+        Update: {
+          condition_name?: string
+          created_at?: string
+          diagnosed_at?: string | null
+          id?: string
+          notes?: string | null
+          severity?: string | null
+          tooth_record_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tooth_conditions_tooth_record_id_fkey"
+            columns: ["tooth_record_id"]
+            isOneToOne: false
+            referencedRelation: "tooth_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tooth_records: {
+        Row: {
+          clinic_id: string
+          created_at: string
+          id: string
+          notes: string | null
+          patient_id: string
+          status: Database["public"]["Enums"]["tooth_status"]
+          tooth_number: number
+          updated_at: string
+        }
+        Insert: {
+          clinic_id: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          patient_id: string
+          status?: Database["public"]["Enums"]["tooth_status"]
+          tooth_number: number
+          updated_at?: string
+        }
+        Update: {
+          clinic_id?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          patient_id?: string
+          status?: Database["public"]["Enums"]["tooth_status"]
+          tooth_number?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tooth_records_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tooth_records_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tooth_treatments: {
+        Row: {
+          cost: number | null
+          created_at: string
+          id: string
+          notes: string | null
+          performed_at: string | null
+          performed_by: string | null
+          status: Database["public"]["Enums"]["treatment_status"]
+          tooth_record_id: string
+          treatment_name: string
+          updated_at: string
+        }
+        Insert: {
+          cost?: number | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          performed_at?: string | null
+          performed_by?: string | null
+          status?: Database["public"]["Enums"]["treatment_status"]
+          tooth_record_id: string
+          treatment_name: string
+          updated_at?: string
+        }
+        Update: {
+          cost?: number | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          performed_at?: string | null
+          performed_by?: string | null
+          status?: Database["public"]["Enums"]["treatment_status"]
+          tooth_record_id?: string
+          treatment_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tooth_treatments_performed_by_fkey"
+            columns: ["performed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tooth_treatments_tooth_record_id_fkey"
+            columns: ["tooth_record_id"]
+            isOneToOne: false
+            referencedRelation: "tooth_records"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       vendors: {
         Row: {
           category: string | null
@@ -487,6 +627,13 @@ export type Database = {
       campaign_type: "email" | "whatsapp" | "sms"
       invoice_status: "draft" | "sent" | "paid" | "overdue" | "cancelled"
       message_status: "pending" | "sent" | "delivered" | "failed"
+      tooth_status:
+        | "healthy"
+        | "decayed"
+        | "missing"
+        | "treated"
+        | "needs_treatment"
+      treatment_status: "planned" | "in_progress" | "completed" | "cancelled"
       user_role:
         | "owner"
         | "dentist"
@@ -632,6 +779,14 @@ export const Constants = {
       campaign_type: ["email", "whatsapp", "sms"],
       invoice_status: ["draft", "sent", "paid", "overdue", "cancelled"],
       message_status: ["pending", "sent", "delivered", "failed"],
+      tooth_status: [
+        "healthy",
+        "decayed",
+        "missing",
+        "treated",
+        "needs_treatment",
+      ],
+      treatment_status: ["planned", "in_progress", "completed", "cancelled"],
       user_role: ["owner", "dentist", "hygienist", "receptionist", "assistant"],
     },
   },
