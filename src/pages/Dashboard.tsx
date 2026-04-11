@@ -1,11 +1,14 @@
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Users, CalendarDays, Receipt, TrendingUp, Clock, AlertTriangle,
-  CheckCircle2, Activity, IndianRupee, FlaskConical
+  CheckCircle2, Activity, IndianRupee, FlaskConical,
+  UserPlus, Play, FileText, Smile, ListOrdered
 } from "lucide-react";
 import DashboardLayout from "@/components/DashboardLayout";
 
