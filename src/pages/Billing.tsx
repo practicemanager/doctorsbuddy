@@ -181,17 +181,18 @@ export default function BillingPage() {
                   <TableHead>Due Date</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Action</TableHead>
+                  <TableHead></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {isLoading ? (
-                  <TableRow><TableCell colSpan={5} className="text-center py-8 text-muted-foreground">Loading...</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">Loading...</TableCell></TableRow>
                 ) : !invoices?.length ? (
-                  <TableRow><TableCell colSpan={5} className="text-center py-8 text-muted-foreground">No invoices yet</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">No invoices yet</TableCell></TableRow>
                 ) : invoices.map((inv: any) => (
                   <TableRow key={inv.id}>
                     <TableCell className="font-medium">{inv.patients?.full_name}</TableCell>
-                    <TableCell>${Number(inv.amount).toFixed(2)}</TableCell>
+                    <TableCell>₹{Number(inv.amount).toLocaleString()}</TableCell>
                     <TableCell>{inv.due_date || "—"}</TableCell>
                     <TableCell>
                       <Badge className={statusColors[inv.status] || ""} variant="secondary">{inv.status}</Badge>
@@ -206,12 +207,33 @@ export default function BillingPage() {
                         </SelectContent>
                       </Select>
                     </TableCell>
+                    <TableCell>
+                      <Button size="sm" variant="ghost" className="h-7 gap-1 text-xs"
+                        onClick={() => setReceiptInvoice(inv)}>
+                        <FileText className="h-3 w-3" /> Receipt
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </CardContent>
         </Card>
+
+        {/* Receipt Dialog */}
+        <Dialog open={!!receiptInvoice} onOpenChange={open => { if (!open) setReceiptInvoice(null); }}>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader><DialogTitle>Payment Receipt</DialogTitle></DialogHeader>
+            {receiptInvoice && (
+              <InvoiceReceipt
+                invoice={receiptInvoice}
+                clinic={clinic}
+                patient={receiptInvoice.patients}
+                items={invoiceItems}
+              />
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </DashboardLayout>
   );
