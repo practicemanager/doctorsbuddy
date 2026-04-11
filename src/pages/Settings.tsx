@@ -16,8 +16,9 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import {
   Building2, Globe, MapPin, Phone, Mail, Link2, Facebook, Instagram, Twitter,
-  Users, Plus, Trash2, Save, Package, Settings as SettingsIcon
+  Users, Plus, Trash2, Save, Package, Settings as SettingsIcon, QrCode
 } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 
 // ─── Clinic Info Tab ────────────────────────────────────────────────
 function ClinicInfoTab({ clinicId }: { clinicId: string }) {
