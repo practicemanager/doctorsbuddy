@@ -149,9 +149,25 @@ export default function DashboardPage() {
   return (
     <DashboardLayout>
       <div className="space-y-6 animate-fade-in">
-        <div>
-          <h1 className="font-heading text-2xl font-bold text-foreground">Dashboard</h1>
-          <p className="text-muted-foreground">Overview of your clinic today & this month.</p>
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <div>
+            <h1 className="font-heading text-2xl font-bold text-foreground">Dashboard</h1>
+            <p className="text-muted-foreground">Overview of your clinic today & this month.</p>
+          </div>
+          <div className="flex gap-2 flex-wrap">
+            <Button size="sm" onClick={() => navigate("/patients")} className="gap-1.5">
+              <UserPlus className="h-3.5 w-3.5" /> Add Walk-in
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => navigate("/queue")} className="gap-1.5">
+              <Play className="h-3.5 w-3.5" /> Queue
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => navigate("/appointments")} className="gap-1.5">
+              <CalendarDays className="h-3.5 w-3.5" /> Book Appointment
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => navigate("/billing")} className="gap-1.5">
+              <FileText className="h-3.5 w-3.5" /> Quick Invoice
+            </Button>
+          </div>
         </div>
 
         {/* Top Stats */}
