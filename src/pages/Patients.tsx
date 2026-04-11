@@ -17,8 +17,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import {
   Plus, Search, Users, Smile, CalendarDays, ChevronLeft,
-  Phone, Mail, MapPin, FileText, Clock, Activity, User2
+  Phone, Mail, MapPin, FileText, Clock, Activity, User2, HeartPulse, History
 } from "lucide-react";
+import MedicalHistoryTab from "@/components/patients/MedicalHistoryTab";
+import VisitHistoryTab from "@/components/patients/VisitHistoryTab";
 
 function PatientProfile({ patient, clinicId, onBack }: { patient: any; clinicId: string; onBack: () => void }) {
   const navigate = useNavigate();
@@ -96,8 +98,10 @@ function PatientProfile({ patient, clinicId, onBack }: { patient: any; clinicId:
 
       {/* Tabs */}
       <Tabs defaultValue="overview">
-        <TabsList>
+        <TabsList className="flex-wrap">
           <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="medical-history" className="gap-1"><HeartPulse className="h-3 w-3" />Medical History</TabsTrigger>
+          <TabsTrigger value="visit-history" className="gap-1"><History className="h-3 w-3" />Visit History</TabsTrigger>
           <TabsTrigger value="treatments">Treatments</TabsTrigger>
           <TabsTrigger value="appointments">Appointments</TabsTrigger>
           <TabsTrigger value="billing">Billing</TabsTrigger>
@@ -127,6 +131,14 @@ function PatientProfile({ patient, clinicId, onBack }: { patient: any; clinicId:
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        <TabsContent value="medical-history" className="mt-4">
+          <MedicalHistoryTab patientId={patient.id} clinicId={clinicId} />
+        </TabsContent>
+
+        <TabsContent value="visit-history" className="mt-4">
+          <VisitHistoryTab patientId={patient.id} />
         </TabsContent>
 
         <TabsContent value="treatments" className="mt-4">

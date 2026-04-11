@@ -502,6 +502,87 @@ export type Database = {
           },
         ]
       }
+      patient_medical_history: {
+        Row: {
+          allergies: string[] | null
+          asthma: boolean | null
+          bleeding_disorders: boolean | null
+          blood_group: string | null
+          clinic_id: string
+          created_at: string
+          current_medications: string[] | null
+          diabetes_status: string | null
+          epilepsy: boolean | null
+          heart_condition: boolean | null
+          hepatitis: boolean | null
+          hiv: boolean | null
+          id: string
+          medical_conditions: string[] | null
+          notes: string | null
+          patient_id: string
+          pregnancy_status: string | null
+          smoking_habits: string | null
+          updated_at: string
+        }
+        Insert: {
+          allergies?: string[] | null
+          asthma?: boolean | null
+          bleeding_disorders?: boolean | null
+          blood_group?: string | null
+          clinic_id: string
+          created_at?: string
+          current_medications?: string[] | null
+          diabetes_status?: string | null
+          epilepsy?: boolean | null
+          heart_condition?: boolean | null
+          hepatitis?: boolean | null
+          hiv?: boolean | null
+          id?: string
+          medical_conditions?: string[] | null
+          notes?: string | null
+          patient_id: string
+          pregnancy_status?: string | null
+          smoking_habits?: string | null
+          updated_at?: string
+        }
+        Update: {
+          allergies?: string[] | null
+          asthma?: boolean | null
+          bleeding_disorders?: boolean | null
+          blood_group?: string | null
+          clinic_id?: string
+          created_at?: string
+          current_medications?: string[] | null
+          diabetes_status?: string | null
+          epilepsy?: boolean | null
+          heart_condition?: boolean | null
+          hepatitis?: boolean | null
+          hiv?: boolean | null
+          id?: string
+          medical_conditions?: string[] | null
+          notes?: string | null
+          patient_id?: string
+          pregnancy_status?: string | null
+          smoking_habits?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_medical_history_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "patient_medical_history_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: true
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       patients: {
         Row: {
           address: string | null

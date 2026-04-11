@@ -12,7 +12,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "sonner";
-import { Plus, Receipt } from "lucide-react";
+import { Plus, Receipt, FileText } from "lucide-react";
+import InvoiceReceipt from "@/components/billing/InvoiceReceipt";
 
 const statusColors: Record<string, string> = {
   draft: "bg-muted text-muted-foreground",
@@ -26,6 +27,7 @@ export default function BillingPage() {
   const { clinicId } = useAuth();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
+  const [receiptInvoice, setReceiptInvoice] = useState<any>(null);
   const [form, setForm] = useState({ patient_id: "", amount: "", due_date: "", notes: "" });
 
   const { data: patients } = useQuery({
@@ -50,6 +52,25 @@ export default function BillingPage() {
       return data ?? [];
     },
     enabled: !!clinicId,
+  });
+
+  const { data: clinic } = useQuery({
+    queryKey: ["clinic", clinicId],
+    queryFn: async () => {
+      const { data } = await supabase.from("clinics").select("*").eq("id", clinicId!).single();
+      return data;
+    },
+    enabled: !!clinicId,
+  });
+
+  const { data: invoiceItems = [] } = useQuery({
+    queryKey: ["invoice-items", receiptInvoice?.id],
+    queryFn: async () => {
+      if (!receiptInvoice?.id) return [];
+      const { data } = await supabase.from("invoice_items").select("*").eq("invoice_id", receiptInvoice.id);
+      return data ?? [];
+    },
+    enabled: !!receiptInvoice?.id,
   });
 
   const addInvoice = useMutation({
@@ -139,13 +160,13 @@ export default function BillingPage() {
           <Card className="shadow-card border-0">
             <CardContent className="p-6">
               <p className="text-sm text-muted-foreground">Pending</p>
-              <p className="mt-1 text-2xl font-bold font-heading text-warning">${totalPending.toFixed(2)}</p>
+              <p className="mt-1 text-2xl font-bold font-heading text-warning">₹{totalPending.toLocaleString()}</p>
             </CardContent>
           </Card>
           <Card className="shadow-card border-0">
             <CardContent className="p-6">
               <p className="text-sm text-muted-foreground">Collected</p>
-              <p className="mt-1 text-2xl font-bold font-heading text-success">${totalPaid.toFixed(2)}</p>
+              <p className="mt-1 text-2xl font-bold font-heading text-success">₹{totalPaid.toLocaleString()}</p>
             </CardContent>
           </Card>
         </div>
@@ -160,17 +181,18 @@ export default function BillingPage() {
                   <TableHead>Due Date</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Action</TableHead>
+                  <TableHead></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {isLoading ? (
-                  <TableRow><TableCell colSpan={5} className="text-center py-8 text-muted-foreground">Loading...</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">Loading...</TableCell></TableRow>
                 ) : !invoices?.length ? (
-                  <TableRow><TableCell colSpan={5} className="text-center py-8 text-muted-foreground">No invoices yet</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">No invoices yet</TableCell></TableRow>
                 ) : invoices.map((inv: any) => (
                   <TableRow key={inv.id}>
                     <TableCell className="font-medium">{inv.patients?.full_name}</TableCell>
-                    <TableCell>${Number(inv.amount).toFixed(2)}</TableCell>
+                    <TableCell>₹{Number(inv.amount).toLocaleString()}</TableCell>
                     <TableCell>{inv.due_date || "—"}</TableCell>
                     <TableCell>
                       <Badge className={statusColors[inv.status] || ""} variant="secondary">{inv.status}</Badge>
@@ -185,12 +207,33 @@ export default function BillingPage() {
                         </SelectContent>
                       </Select>
                     </TableCell>
+                    <TableCell>
+                      <Button size="sm" variant="ghost" className="h-7 gap-1 text-xs"
+                        onClick={() => setReceiptInvoice(inv)}>
+                        <FileText className="h-3 w-3" /> Receipt
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </CardContent>
         </Card>
+
+        {/* Receipt Dialog */}
+        <Dialog open={!!receiptInvoice} onOpenChange={open => { if (!open) setReceiptInvoice(null); }}>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader><DialogTitle>Payment Receipt</DialogTitle></DialogHeader>
+            {receiptInvoice && (
+              <InvoiceReceipt
+                invoice={receiptInvoice}
+                clinic={clinic}
+                patient={receiptInvoice.patients}
+                items={invoiceItems}
+              />
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </DashboardLayout>
   );
