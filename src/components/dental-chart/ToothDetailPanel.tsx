@@ -275,9 +275,19 @@ export default function ToothDetailPanel({
               <div key={t.id} className="p-2 rounded bg-muted space-y-1">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium">{t.treatment_name}</span>
-                  <Badge variant={t.status === "completed" ? "default" : "outline"} className="text-xs">
-                    {t.status.replace("_", " ")}
-                  </Badge>
+                  <Select
+                    value={t.status}
+                    onValueChange={v => updateTreatmentStatus.mutate({ id: t.id, newStatus: v, treatmentName: t.treatment_name })}
+                  >
+                    <SelectTrigger className="h-6 w-[110px] text-xs">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="planned">Planned</SelectItem>
+                      <SelectItem value="in_progress">In Progress</SelectItem>
+                      <SelectItem value="completed">Completed</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 {t.cost > 0 && <p className="text-xs font-medium">₹{Number(t.cost).toLocaleString()}</p>}
                 {t.notes && <p className="text-xs text-muted-foreground">{t.notes}</p>}
