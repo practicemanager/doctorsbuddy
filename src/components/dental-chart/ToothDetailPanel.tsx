@@ -263,7 +263,7 @@ export default function ToothDetailPanel({
 
             {showTreatmentForm && (
               <form onSubmit={e => { e.preventDefault(); addTreatment.mutate(); }} className="space-y-2 p-3 rounded-lg bg-muted">
-                <Select value={treatmentForm.treatment_name} onValueChange={v => setTreatmentForm(f => ({ ...f, treatment_name: v }))}>
+                <Select value={treatmentForm.treatment_name} onValueChange={handleTreatmentSelect}>
                   <SelectTrigger><SelectValue placeholder="Select treatment" /></SelectTrigger>
                   <SelectContent>
                     {COMMON_TREATMENTS.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
