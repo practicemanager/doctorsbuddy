@@ -230,6 +230,120 @@ export type Database = {
         }
         Relationships: []
       }
+      inventory_items: {
+        Row: {
+          category: string | null
+          clinic_id: string
+          cost_per_unit: number | null
+          created_at: string
+          expiry_date: string | null
+          id: string
+          min_stock_level: number
+          name: string
+          notes: string | null
+          quantity: number
+          sku: string | null
+          supplier_name: string | null
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          clinic_id: string
+          cost_per_unit?: number | null
+          created_at?: string
+          expiry_date?: string | null
+          id?: string
+          min_stock_level?: number
+          name: string
+          notes?: string | null
+          quantity?: number
+          sku?: string | null
+          supplier_name?: string | null
+          unit?: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          clinic_id?: string
+          cost_per_unit?: number | null
+          created_at?: string
+          expiry_date?: string | null
+          id?: string
+          min_stock_level?: number
+          name?: string
+          notes?: string | null
+          quantity?: number
+          sku?: string | null
+          supplier_name?: string | null
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_items_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_transactions: {
+        Row: {
+          created_at: string
+          id: string
+          inventory_item_id: string
+          notes: string | null
+          performed_by: string | null
+          quantity_changed: number
+          transaction_type: Database["public"]["Enums"]["inventory_transaction_type"]
+          treatment_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          inventory_item_id: string
+          notes?: string | null
+          performed_by?: string | null
+          quantity_changed: number
+          transaction_type: Database["public"]["Enums"]["inventory_transaction_type"]
+          treatment_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          inventory_item_id?: string
+          notes?: string | null
+          performed_by?: string | null
+          quantity_changed?: number
+          transaction_type?: Database["public"]["Enums"]["inventory_transaction_type"]
+          treatment_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_transactions_inventory_item_id_fkey"
+            columns: ["inventory_item_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_transactions_performed_by_fkey"
+            columns: ["performed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_transactions_treatment_id_fkey"
+            columns: ["treatment_id"]
+            isOneToOne: false
+            referencedRelation: "tooth_treatments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       invoice_items: {
         Row: {
           created_at: string
@@ -686,6 +800,15 @@ export type Database = {
         Args: { p_address?: string; p_name: string; p_phone?: string }
         Returns: string
       }
+      deduct_inventory: {
+        Args: {
+          p_item_id: string
+          p_performed_by?: string
+          p_quantity: number
+          p_treatment_id?: string
+        }
+        Returns: undefined
+      }
       get_next_token_number: {
         Args: { p_clinic_id: string; p_date?: string }
         Returns: number
@@ -702,6 +825,12 @@ export type Database = {
         | "no_show"
       campaign_status: "draft" | "scheduled" | "sending" | "sent" | "cancelled"
       campaign_type: "email" | "whatsapp" | "sms"
+      inventory_transaction_type:
+        | "restock"
+        | "usage"
+        | "adjustment"
+        | "expired"
+        | "treatment_deduction"
       invoice_status: "draft" | "sent" | "paid" | "overdue" | "cancelled"
       message_status: "pending" | "sent" | "delivered" | "failed"
       queue_priority: "normal" | "urgent" | "emergency"
@@ -861,6 +990,13 @@ export const Constants = {
       ],
       campaign_status: ["draft", "scheduled", "sending", "sent", "cancelled"],
       campaign_type: ["email", "whatsapp", "sms"],
+      inventory_transaction_type: [
+        "restock",
+        "usage",
+        "adjustment",
+        "expired",
+        "treatment_deduction",
+      ],
       invoice_status: ["draft", "sent", "paid", "overdue", "cancelled"],
       message_status: ["pending", "sent", "delivered", "failed"],
       queue_priority: ["normal", "urgent", "emergency"],
