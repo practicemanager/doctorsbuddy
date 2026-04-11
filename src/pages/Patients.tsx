@@ -98,8 +98,10 @@ function PatientProfile({ patient, clinicId, onBack }: { patient: any; clinicId:
 
       {/* Tabs */}
       <Tabs defaultValue="overview">
-        <TabsList>
+        <TabsList className="flex-wrap">
           <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="medical-history" className="gap-1"><HeartPulse className="h-3 w-3" />Medical History</TabsTrigger>
+          <TabsTrigger value="visit-history" className="gap-1"><History className="h-3 w-3" />Visit History</TabsTrigger>
           <TabsTrigger value="treatments">Treatments</TabsTrigger>
           <TabsTrigger value="appointments">Appointments</TabsTrigger>
           <TabsTrigger value="billing">Billing</TabsTrigger>
