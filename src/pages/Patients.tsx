@@ -75,14 +75,6 @@ function PatientProfile({ patient, clinicId, onBack }: { patient: any; clinicId:
     },
   });
 
-  const { data: invoices = [] } = useQuery({
-    queryKey: ["patient-invoices", patient.id],
-    queryFn: async () => {
-      const { data } = await supabase.from("invoices").select("*")
-        .eq("patient_id", patient.id).order("created_at", { ascending: false }).limit(10);
-      return data ?? [];
-    },
-  });
 
   const age = patient.date_of_birth
     ? Math.floor((Date.now() - new Date(patient.date_of_birth).getTime()) / (365.25 * 24 * 60 * 60 * 1000))
