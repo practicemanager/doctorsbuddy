@@ -65,7 +65,7 @@ export default function PatientSelfRegister() {
       .from("queue_tokens")
       .insert({
         clinic_id: clinicId,
-        patient_id: patient.id,
+        patient_id: patientId,
         token_number: nextToken,
         queue_date: today,
         status: "waiting",
