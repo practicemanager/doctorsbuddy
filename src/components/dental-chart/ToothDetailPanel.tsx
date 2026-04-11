@@ -56,7 +56,23 @@ export default function ToothDetailPanel({
     enabled: !!toothRecordId,
   });
 
-  // Upsert tooth record + update status
+  // Fetch treatment pricing for auto-fill
+  const { data: pricingMap } = useQuery({
+    queryKey: ["treatment-pricing", clinicId],
+    queryFn: async () => {
+      const { data } = await supabase.from("treatment_pricing").select("treatment_name, base_price").eq("clinic_id", clinicId);
+      const map: Record<string, number> = {};
+      data?.forEach((p: any) => { map[p.treatment_name] = Number(p.base_price); });
+      return map;
+    },
+    enabled: !!clinicId,
+  });
+
+  const handleTreatmentSelect = (name: string) => {
+    const price = pricingMap?.[name];
+    setTreatmentForm(f => ({ ...f, treatment_name: name, cost: price ? String(price) : f.cost }));
+  };
+
   const updateStatus = useMutation({
     mutationFn: async (newStatus: string) => {
       if (toothRecordId) {
