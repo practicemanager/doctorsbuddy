@@ -6,6 +6,8 @@ const STATUS_COLORS: Record<string, string> = {
   missing: "fill-gray-700 hover:fill-gray-800",
   treated: "fill-blue-400 hover:fill-blue-500",
   needs_treatment: "fill-red-400 hover:fill-red-500",
+  under_observation: "fill-yellow-400 hover:fill-yellow-500",
+  restored: "fill-sky-400 hover:fill-sky-500",
 };
 
 interface ToothSVGProps {
@@ -22,13 +24,12 @@ export default function ToothSVG({ toothNumber, status, isSelected, onClick }: T
     <button
       onClick={onClick}
       className={cn(
-        "flex flex-col items-center gap-1 p-1 rounded-lg transition-all",
+        "flex flex-col items-center gap-0.5 p-1 rounded-lg transition-all",
         isSelected && "ring-2 ring-primary bg-accent"
       )}
       title={`Tooth ${toothNumber} - ${status}`}
     >
       <svg viewBox="0 0 30 40" className="w-7 h-9">
-        {/* Simple tooth shape */}
         <path
           d="M7 5 C7 2, 12 0, 15 0 C18 0, 23 2, 23 5 L24 18 C24 22, 22 28, 20 32 C19 35, 18 38, 17 39 C16 40, 14 40, 13 39 C12 38, 11 35, 10 32 C8 28, 6 22, 6 18 Z"
           className={cn("stroke-foreground/30 stroke-[0.5] transition-colors cursor-pointer", colorClass)}

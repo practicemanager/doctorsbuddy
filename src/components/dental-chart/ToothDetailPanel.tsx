@@ -21,8 +21,8 @@ interface ToothDetailPanelProps {
   onUpdate: () => void;
 }
 
-const TOOTH_STATUSES = ["healthy", "decayed", "missing", "treated", "needs_treatment"];
-const COMMON_CONDITIONS = ["Cavity", "Crack", "Abscess", "Gingivitis", "Periodontitis", "Erosion", "Impacted", "Malocclusion"];
+const TOOTH_STATUSES = ["healthy", "decayed", "missing", "treated", "needs_treatment", "under_observation", "restored"];
+const COMMON_CONDITIONS = ["Caries", "Cavity", "Crack", "Abscess", "Gingivitis", "Periodontitis", "Erosion", "Impacted", "Malocclusion", "Attrition", "Abrasion", "Fracture", "Mobility", "Stain", "Calculus", "Infection"];
 const COMMON_TREATMENTS = ["Filling", "Root Canal (RCT)", "Crown", "Extraction", "Scaling", "Veneer", "Bridge", "Implant", "Whitening"];
 
 export default function ToothDetailPanel({
@@ -182,6 +182,8 @@ export default function ToothDetailPanel({
     missing: "bg-gray-200 text-gray-800",
     treated: "bg-blue-100 text-blue-800",
     needs_treatment: "bg-red-100 text-red-800",
+    under_observation: "bg-yellow-100 text-yellow-800",
+    restored: "bg-sky-100 text-sky-800",
   };
 
   return (
