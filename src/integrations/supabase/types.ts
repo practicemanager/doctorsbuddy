@@ -469,6 +469,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_clinic_and_link: {
+        Args: { p_address?: string; p_name: string; p_phone?: string }
+        Returns: string
+      }
       get_user_clinic_id: { Args: never; Returns: string }
     }
     Enums: {
