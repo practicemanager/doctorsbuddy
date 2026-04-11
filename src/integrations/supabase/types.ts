@@ -1389,6 +1389,7 @@ export type Database = {
       }
     }
     Functions: {
+      clinic_exists: { Args: { p_clinic_id: string }; Returns: boolean }
       create_clinic_and_link: {
         Args: { p_address?: string; p_name: string; p_phone?: string }
         Returns: string
