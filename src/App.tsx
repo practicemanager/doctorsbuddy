@@ -20,6 +20,7 @@ import DentalChart from "./pages/DentalChart";
 import Queue from "./pages/Queue";
 import Inventory from "./pages/Inventory";
 import TreatmentCosting from "./pages/TreatmentCosting";
+import PatientSelfRegister from "./pages/PatientSelfRegister";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
