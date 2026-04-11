@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard, Users, CalendarDays, Receipt, Megaphone,
-  Sparkles, MessageSquare, Settings, LogOut, Smile, ChevronLeft, ChevronRight, ListOrdered, Package, IndianRupee
+  Sparkles, MessageSquare, Settings, LogOut, Smile, ChevronLeft, ChevronRight, ListOrdered, Package, IndianRupee, TrendingUp
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -17,6 +17,7 @@ const navItems = [
   { href: "/inventory", label: "Inventory", icon: Package },
   { href: "/treatment-costing", label: "Treatment Costing", icon: IndianRupee },
   { href: "/billing", label: "Billing", icon: Receipt },
+  { href: "/finance", label: "Finance", icon: TrendingUp },
   { href: "/campaigns", label: "Campaigns", icon: Megaphone },
   { href: "/ai-generator", label: "AI Generator", icon: Sparkles },
   { href: "/settings", label: "Settings", icon: Settings },
