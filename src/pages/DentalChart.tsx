@@ -117,7 +117,7 @@ export default function DentalChartPage() {
   }, [savePrescription]);
 
   // Prescription items for summary
-  const { data: prescriptionItems = [] } = useQuery({
+  const { data: prescriptionItems = [], refetch: refetchItems } = useQuery({
     queryKey: ["prescription-items-all", prescriptionId],
     queryFn: async () => {
       const { data } = await supabase
