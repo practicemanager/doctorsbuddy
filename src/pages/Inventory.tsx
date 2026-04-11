@@ -338,6 +338,11 @@ export default function Inventory() {
             </Table>
           </div>
         </TabsContent>
+
+        {/* Mappings Tab */}
+        <TabsContent value="mappings">
+          <TreatmentMaterialMappings />
+        </TabsContent>
       </Tabs>
 
       {/* Restock Dialog */}
