@@ -382,6 +382,7 @@ export default function SettingsPage() {
             <TabsTrigger value="clinic">Clinic Info</TabsTrigger>
             <TabsTrigger value="team">Team</TabsTrigger>
             <TabsTrigger value="vendors">Vendors</TabsTrigger>
+            <TabsTrigger value="qr">Patient QR</TabsTrigger>
           </TabsList>
 
           <TabsContent value="clinic">
