@@ -84,7 +84,7 @@ export default function DentalChartPage() {
         setAlignmentCondition(rx.alignment_condition || "normal");
         setDiagnosisNotes(rx.diagnosis_notes || "");
         setTreatmentPlan(rx.treatment_plan || "");
-        setMedications(Array.isArray(rx.medications) ? (rx.medications as Medication[]) : []);
+        setMedications(Array.isArray(rx.medications) ? (rx.medications as unknown as Medication[]) : []);
         setPrescriptionStatus(rx.status || "draft");
         setChartType((rx.chart_type as "adult" | "kids") || "adult");
       } else {
