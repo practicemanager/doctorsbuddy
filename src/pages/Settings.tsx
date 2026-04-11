@@ -16,8 +16,9 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import {
   Building2, Globe, MapPin, Phone, Mail, Link2, Facebook, Instagram, Twitter,
-  Users, Plus, Trash2, Save, Package, Settings as SettingsIcon, QrCode
+  Users, Plus, Trash2, Save, Package, Settings as SettingsIcon, QrCode, Plug
 } from "lucide-react";
+import GoogleIntegrationTab from "@/components/settings/GoogleIntegrationTab";
 import { QRCodeSVG } from "qrcode.react";
 
 // ─── Clinic Info Tab ────────────────────────────────────────────────
@@ -383,6 +384,7 @@ export default function SettingsPage() {
             <TabsTrigger value="team">Team</TabsTrigger>
             <TabsTrigger value="vendors">Vendors</TabsTrigger>
             <TabsTrigger value="qr">Patient QR</TabsTrigger>
+            <TabsTrigger value="integrations">Integrations</TabsTrigger>
           </TabsList>
 
           <TabsContent value="clinic">
@@ -430,6 +432,10 @@ export default function SettingsPage() {
                 </Button>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="integrations">
+            <GoogleIntegrationTab />
           </TabsContent>
         </Tabs>
       </div>
