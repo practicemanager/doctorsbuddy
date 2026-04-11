@@ -11,7 +11,9 @@ import { Stethoscope, Mail, Lock, User } from "lucide-react";
 export default function AuthPage() {
   const navigate = useNavigate();
   const { session, profile, loading: authLoading } = useAuth();
-  const [mode, setMode] = useState<"login" | "signup">("login");
+  const searchParams = new URLSearchParams(window.location.search);
+  const defaultMode = searchParams.get("mode") === "login" ? "login" : "signup";
+  const [mode, setMode] = useState<"login" | "signup">(defaultMode);
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -121,8 +123,8 @@ export default function AuthPage() {
             </>
           ) : (
             <>
-              <h2 className="text-2xl font-bold text-foreground mb-1">Create account</h2>
-              <p className="text-muted-foreground mb-8">Register to start managing your clinic</p>
+              <h2 className="text-2xl font-bold text-foreground mb-1">Get Started Free</h2>
+              <p className="text-muted-foreground mb-8">Create your account and set up your clinic in minutes</p>
 
               <form onSubmit={handleSignup} className="space-y-5">
                 <div className="space-y-2">
