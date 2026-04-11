@@ -21,16 +21,17 @@ Deno.serve(async (req) => {
       { global: { headers: { Authorization: authHeader } } }
     );
 
-    const token = authHeader.replace("Bearer ", "");
-    const { data: claimsData, error: claimsErr } = await supabase.auth.getClaims(token);
-    if (claimsErr || !claimsData?.claims) {
+    const { data: { user }, error: userErr } = await supabase.auth.getUser();
+    if (userErr || !user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: corsHeaders });
     }
 
-    const { action } = await req.json();
+    const body = await req.json();
+    const { action } = body;
 
     if (action === "get_auth_url") {
-      const redirectUri = req.headers.get("origin") + "/settings?tab=integrations";
+      const origin = req.headers.get("origin") || req.headers.get("referer")?.replace(/\/$/, "") || "";
+      const redirectUri = origin + "/settings?tab=integrations";
       const scopes = [
         "https://www.googleapis.com/auth/calendar",
         "https://www.googleapis.com/auth/spreadsheets",
@@ -52,22 +53,16 @@ Deno.serve(async (req) => {
     }
 
     if (action === "exchange_code") {
-      const { code, redirect_uri } = await req.json().catch(() => ({}));
-      const body = await req.json().catch(() => ({}));
-      const exchangeCode = code || body.code;
-      const exchangeRedirect = redirect_uri || body.redirect_uri;
-
-      // Re-parse since we already consumed req.json
-      const reqBody = JSON.parse(await req.text().catch(() => "{}"));
+      const { code, redirect_uri } = body;
 
       const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({
-          code: exchangeCode || reqBody.code,
+          code,
           client_id: GOOGLE_CLIENT_ID,
           client_secret: GOOGLE_CLIENT_SECRET,
-          redirect_uri: exchangeRedirect || reqBody.redirect_uri,
+          redirect_uri,
           grant_type: "authorization_code",
         }),
       });
@@ -123,7 +118,11 @@ Deno.serve(async (req) => {
     if (action === "disconnect") {
       const { data: profile } = await supabase.from("profiles").select("clinic_id").single();
       if (profile?.clinic_id) {
-        await supabase.from("google_integrations").delete().eq("clinic_id", profile.clinic_id);
+        const adminClient = createClient(
+          Deno.env.get("SUPABASE_URL")!,
+          Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+        );
+        await adminClient.from("google_integrations").delete().eq("clinic_id", profile.clinic_id);
       }
       return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -131,7 +130,20 @@ Deno.serve(async (req) => {
     }
 
     if (action === "status") {
-      const { data } = await supabase.from("google_integrations").select("connected_email, sync_enabled, last_sync_at, calendar_id").single();
+      const { data: profile } = await supabase.from("profiles").select("clinic_id").single();
+      if (!profile?.clinic_id) {
+        return new Response(JSON.stringify({ connected: false }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      const adminClient = createClient(
+        Deno.env.get("SUPABASE_URL")!,
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+      );
+      const { data } = await adminClient.from("google_integrations")
+        .select("connected_email, sync_enabled, last_sync_at, calendar_id")
+        .eq("clinic_id", profile.clinic_id)
+        .single();
       return new Response(JSON.stringify({ connected: !!data, ...data }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
