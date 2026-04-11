@@ -417,6 +417,79 @@ export type Database = {
           },
         ]
       }
+      queue_tokens: {
+        Row: {
+          called_at: string | null
+          clinic_id: string
+          completed_at: string | null
+          counter_number: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          patient_id: string
+          priority: Database["public"]["Enums"]["queue_priority"]
+          provider_id: string | null
+          queue_date: string
+          status: Database["public"]["Enums"]["queue_status"]
+          token_number: number
+          updated_at: string
+        }
+        Insert: {
+          called_at?: string | null
+          clinic_id: string
+          completed_at?: string | null
+          counter_number?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          patient_id: string
+          priority?: Database["public"]["Enums"]["queue_priority"]
+          provider_id?: string | null
+          queue_date?: string
+          status?: Database["public"]["Enums"]["queue_status"]
+          token_number: number
+          updated_at?: string
+        }
+        Update: {
+          called_at?: string | null
+          clinic_id?: string
+          completed_at?: string | null
+          counter_number?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          patient_id?: string
+          priority?: Database["public"]["Enums"]["queue_priority"]
+          provider_id?: string | null
+          queue_date?: string
+          status?: Database["public"]["Enums"]["queue_status"]
+          token_number?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "queue_tokens_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "queue_tokens_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "queue_tokens_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tooth_conditions: {
         Row: {
           condition_name: string
@@ -613,6 +686,10 @@ export type Database = {
         Args: { p_address?: string; p_name: string; p_phone?: string }
         Returns: string
       }
+      get_next_token_number: {
+        Args: { p_clinic_id: string; p_date?: string }
+        Returns: number
+      }
       get_user_clinic_id: { Args: never; Returns: string }
     }
     Enums: {
@@ -627,6 +704,13 @@ export type Database = {
       campaign_type: "email" | "whatsapp" | "sms"
       invoice_status: "draft" | "sent" | "paid" | "overdue" | "cancelled"
       message_status: "pending" | "sent" | "delivered" | "failed"
+      queue_priority: "normal" | "urgent" | "emergency"
+      queue_status:
+        | "waiting"
+        | "in_progress"
+        | "completed"
+        | "cancelled"
+        | "no_show"
       tooth_status:
         | "healthy"
         | "decayed"
@@ -779,6 +863,14 @@ export const Constants = {
       campaign_type: ["email", "whatsapp", "sms"],
       invoice_status: ["draft", "sent", "paid", "overdue", "cancelled"],
       message_status: ["pending", "sent", "delivered", "failed"],
+      queue_priority: ["normal", "urgent", "emergency"],
+      queue_status: [
+        "waiting",
+        "in_progress",
+        "completed",
+        "cancelled",
+        "no_show",
+      ],
       tooth_status: [
         "healthy",
         "decayed",
