@@ -29,16 +29,17 @@ export default function TreatmentCosting() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState(emptyForm);
 
-  const { data: pricings = [], isLoading } = useQuery({
+  const { data: pricingsData, isLoading } = useQuery({
     queryKey: ["treatment-pricing", clinicId],
     queryFn: async () => {
       if (!clinicId) return [];
       const { data, error } = await supabase.from("treatment_pricing").select("*").eq("clinic_id", clinicId).order("treatment_name");
       if (error) throw error;
-      return data;
+      return data ?? [];
     },
     enabled: !!clinicId,
   });
+  const pricings = Array.isArray(pricingsData) ? pricingsData : [];
 
   const num = (v: string) => Number(v) || 0;
   const totalCost = num(form.material_cost) + num(form.doctor_fee) + num(form.lab_cost) + num(form.other_cost);
