@@ -62,6 +62,7 @@ export default function TreatmentQuickPanel({
     },
     onSuccess: (_, name) => {
       queryClient.invalidateQueries({ queryKey: ["tooth-conditions"] });
+      queryClient.invalidateQueries({ queryKey: ["treatment-summary"] });
       toast.success(`${name} added`);
     },
     onError: (e: any) => toast.error(e.message),
@@ -79,6 +80,7 @@ export default function TreatmentQuickPanel({
     },
     onSuccess: (_, name) => {
       queryClient.invalidateQueries({ queryKey: ["tooth-treatments"] });
+      queryClient.invalidateQueries({ queryKey: ["treatment-summary"] });
       toast.success(`${name} planned`);
     },
     onError: (e: any) => toast.error(e.message),
