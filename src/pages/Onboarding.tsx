@@ -41,32 +41,23 @@ export default function OnboardingPage() {
       }
     }
 
-    const { data: clinic, error: clinicError } = await supabase
-      .from("clinics")
-      .insert({ name: clinicName, phone: clinicPhone, address: clinicAddress })
-      .select()
-      .single();
+    const { data: clinicId, error: clinicError } = await supabase
+      .rpc("create_clinic_and_link", {
+        p_name: clinicName,
+        p_phone: clinicPhone || null,
+        p_address: clinicAddress || null,
+      });
 
-    if (clinicError || !clinic) {
+    if (clinicError) {
       console.error("Clinic creation error:", clinicError);
-      toast.error("Failed to create clinic: " + (clinicError?.message || "Unknown error"));
+      toast.error("Failed to create clinic: " + clinicError.message);
       setLoading(false);
       return;
     }
 
-    const { error: profileError } = await supabase
-      .from("profiles")
-      .update({ clinic_id: clinic.id, role: "owner" })
-      .eq("user_id", user.id);
-
-    if (profileError) {
-      console.error("Profile update error:", profileError);
-      toast.error("Failed to link clinic: " + profileError.message);
-    } else {
-      await refreshProfile();
-      toast.success("Clinic created! Welcome to Dental Buddy.");
-      navigate("/dashboard");
-    }
+    await refreshProfile();
+    toast.success("Clinic created! Welcome to Dental Buddy.");
+    navigate("/dashboard");
     setLoading(false);
   };
 
