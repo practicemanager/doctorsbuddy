@@ -13,7 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Plus, Package, AlertTriangle, Calendar, ArrowDown, ArrowUp, History, Search, Trash2 } from "lucide-react";
+import { Plus, Package, AlertTriangle, Calendar, ArrowDown, ArrowUp, History, Search, Trash2, Link2 } from "lucide-react";
+import TreatmentMaterialMappings from "@/components/inventory/TreatmentMaterialMappings";
 import { format, differenceInDays } from "date-fns";
 
 const CATEGORIES = ["General", "Consumables", "Instruments", "Medications", "PPE", "Dental Materials", "Lab Supplies"];
