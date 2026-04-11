@@ -107,6 +107,9 @@ export default function InvoiceReceipt({ invoice, clinic, patient, items = [] }:
             ₹{totalAmount.toLocaleString("en-IN")}
           </div>
         </div>
+        {/* Items table if available */}
+        {items.length > 0 && (
+          <>
             <h2 style={{ fontSize: 13, borderBottom: "1px solid #ccc", paddingBottom: 4 }}>Treatment Details</h2>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
               <thead>
@@ -134,15 +137,25 @@ export default function InvoiceReceipt({ invoice, clinic, patient, items = [] }:
         {/* Summary */}
         <div style={{ marginTop: 16, borderTop: "1px solid #ddd", paddingTop: 8 }}>
           <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, padding: "4px 0" }}>
-            <span>Subtotal</span><span style={{ fontWeight: 600 }}>₹{amount.toLocaleString("en-IN")}</span>
+            <span>Subtotal</span><span style={{ fontWeight: 600 }}>₹{subtotal.toLocaleString("en-IN")}</span>
           </div>
-          {gstRate > 0 && (
+          {discountTotal > 0 && (
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, padding: "4px 0", color: "#16a34a" }}>
+              <span>Discount{discountPct > 0 ? ` (${discountPct}%)` : ""}</span><span>-₹{discountTotal.toLocaleString("en-IN")}</span>
+            </div>
+          )}
+          {taxRate > 0 && (
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, padding: "4px 0" }}>
-              <span>GST ({gstRate}%)</span><span>₹{gstAmount.toLocaleString("en-IN")}</span>
+              <span>Tax ({taxRate}%)</span><span>₹{taxAmount.toLocaleString("en-IN")}</span>
+            </div>
+          )}
+          {invoice.coupon_code && (
+            <div style={{ fontSize: 11, color: "#666", padding: "2px 0" }}>
+              Coupon applied: <strong>{invoice.coupon_code}</strong>
             </div>
           )}
           <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, fontWeight: "bold", padding: "8px 0", borderTop: "2px solid #333" }}>
-            <span>Total</span><span>₹{totalWithGst.toLocaleString("en-IN")}</span>
+            <span>Total</span><span>₹{totalAmount.toLocaleString("en-IN")}</span>
           </div>
         </div>
 
