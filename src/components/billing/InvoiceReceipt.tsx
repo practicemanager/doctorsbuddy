@@ -13,10 +13,13 @@ interface InvoiceReceiptProps {
 export default function InvoiceReceipt({ invoice, clinic, patient, items = [] }: InvoiceReceiptProps) {
   const printRef = useRef<HTMLDivElement>(null);
 
-  const amount = Number(invoice.amount);
-  const gstRate = 0; // Can be made configurable
-  const gstAmount = amount * gstRate / 100;
-  const totalWithGst = amount + gstAmount;
+  const subtotal = Number(invoice.subtotal || invoice.amount);
+  const discountAmt = Number(invoice.discount_amount || 0);
+  const discountPct = Number(invoice.discount_percent || 0);
+  const discountTotal = discountAmt + (subtotal * discountPct / 100);
+  const taxRate = Number(invoice.tax_rate || 0);
+  const taxAmount = Number(invoice.tax_amount || 0);
+  const totalAmount = Number(invoice.amount);
 
   const handlePrint = () => {
     const el = printRef.current;
@@ -101,10 +104,9 @@ export default function InvoiceReceipt({ invoice, clinic, patient, items = [] }:
             {invoice.status === "paid" ? "Amount Paid" : "Amount Due"}
           </div>
           <div style={{ fontSize: 28, fontWeight: "bold", color: invoice.status === "paid" ? "#16a34a" : "#d97706" }}>
-            ₹{amount.toLocaleString("en-IN")}
+            ₹{totalAmount.toLocaleString("en-IN")}
           </div>
         </div>
-
         {/* Items table if available */}
         {items.length > 0 && (
           <>
@@ -135,15 +137,25 @@ export default function InvoiceReceipt({ invoice, clinic, patient, items = [] }:
         {/* Summary */}
         <div style={{ marginTop: 16, borderTop: "1px solid #ddd", paddingTop: 8 }}>
           <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, padding: "4px 0" }}>
-            <span>Subtotal</span><span style={{ fontWeight: 600 }}>₹{amount.toLocaleString("en-IN")}</span>
+            <span>Subtotal</span><span style={{ fontWeight: 600 }}>₹{subtotal.toLocaleString("en-IN")}</span>
           </div>
-          {gstRate > 0 && (
+          {discountTotal > 0 && (
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, padding: "4px 0", color: "#16a34a" }}>
+              <span>Discount{discountPct > 0 ? ` (${discountPct}%)` : ""}</span><span>-₹{discountTotal.toLocaleString("en-IN")}</span>
+            </div>
+          )}
+          {taxRate > 0 && (
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, padding: "4px 0" }}>
-              <span>GST ({gstRate}%)</span><span>₹{gstAmount.toLocaleString("en-IN")}</span>
+              <span>Tax ({taxRate}%)</span><span>₹{taxAmount.toLocaleString("en-IN")}</span>
+            </div>
+          )}
+          {invoice.coupon_code && (
+            <div style={{ fontSize: 11, color: "#666", padding: "2px 0" }}>
+              Coupon applied: <strong>{invoice.coupon_code}</strong>
             </div>
           )}
           <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, fontWeight: "bold", padding: "8px 0", borderTop: "2px solid #333" }}>
-            <span>Total</span><span>₹{totalWithGst.toLocaleString("en-IN")}</span>
+            <span>Total</span><span>₹{totalAmount.toLocaleString("en-IN")}</span>
           </div>
         </div>
 

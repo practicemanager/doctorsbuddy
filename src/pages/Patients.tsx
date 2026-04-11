@@ -22,8 +22,16 @@ import {
 import MedicalHistoryTab from "@/components/patients/MedicalHistoryTab";
 import VisitHistoryTab from "@/components/patients/VisitHistoryTab";
 
+const TREATMENT_STATUS_COLORS: Record<string, string> = {
+  planned: "bg-primary/10 text-primary border-primary/30",
+  in_progress: "bg-warning/10 text-warning border-warning/30",
+  completed: "bg-success/10 text-success border-success/30",
+  cancelled: "bg-destructive/10 text-destructive border-destructive/30",
+};
+
 function PatientProfile({ patient, clinicId, onBack }: { patient: any; clinicId: string; onBack: () => void }) {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const { data: appointments = [] } = useQuery({
     queryKey: ["patient-appointments", patient.id],
@@ -53,6 +61,20 @@ function PatientProfile({ patient, clinicId, onBack }: { patient: any; clinicId:
       return data ?? [];
     },
   });
+
+  const updateTreatmentStatus = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+      const update: any = { status: status as any };
+      if (status === "completed") update.performed_at = new Date().toISOString();
+      const { error } = await supabase.from("tooth_treatments").update(update).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["patient-treatments"] });
+      toast.success("Treatment status updated!");
+    },
+  });
+
 
   const age = patient.date_of_birth
     ? Math.floor((Date.now() - new Date(patient.date_of_birth).getTime()) / (365.25 * 24 * 60 * 60 * 1000))
@@ -151,18 +173,35 @@ function PatientProfile({ patient, clinicId, onBack }: { patient: any; clinicId:
                     <TableHead>Tooth</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Cost</TableHead>
+                    <TableHead>Completed</TableHead>
                     <TableHead>Date</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {!treatments.length ? (
-                    <TableRow><TableCell colSpan={5} className="text-center py-6 text-muted-foreground">No treatments recorded</TableCell></TableRow>
+                    <TableRow><TableCell colSpan={6} className="text-center py-6 text-muted-foreground">No treatments recorded</TableCell></TableRow>
                   ) : treatments.map((t: any) => (
                     <TableRow key={t.id}>
                       <TableCell className="font-medium">{t.treatment_name}</TableCell>
                       <TableCell>#{t.tooth_records?.tooth_number}</TableCell>
-                      <TableCell><Badge variant="secondary" className="text-xs">{t.status}</Badge></TableCell>
+                      <TableCell>
+                        <Select value={t.status} onValueChange={v => updateTreatmentStatus.mutate({ id: t.id, status: v })}>
+                          <SelectTrigger className="w-32 h-7 text-xs">
+                            <Badge className={`${TREATMENT_STATUS_COLORS[t.status] || ""} text-xs`} variant="secondary">
+                              {t.status?.replace("_", " ")}
+                            </Badge>
+                          </SelectTrigger>
+                          <SelectContent>
+                            {["planned", "in_progress", "completed", "cancelled"].map(s =>
+                              <SelectItem key={s} value={s}>{s.replace("_", " ")}</SelectItem>
+                            )}
+                          </SelectContent>
+                        </Select>
+                      </TableCell>
                       <TableCell>{t.cost ? `₹${Number(t.cost).toLocaleString()}` : "—"}</TableCell>
+                      <TableCell className="text-muted-foreground text-xs">
+                        {t.performed_at ? new Date(t.performed_at).toLocaleDateString() : "—"}
+                      </TableCell>
                       <TableCell className="text-muted-foreground">{new Date(t.created_at).toLocaleDateString()}</TableCell>
                     </TableRow>
                   ))}
@@ -338,7 +377,7 @@ export default function PatientsPage() {
                   <div className="space-y-2"><Label>Email</Label><Input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} /></div>
                   <div className="space-y-2"><Label>Phone</Label><Input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} /></div>
                 </div>
-                <div className="space-y-2"><Label>Date of Birth</Label><Input type="date" value={form.date_of_birth} onChange={e => setForm(f => ({ ...f, date_of_birth: e.target.value }))} /></div>
+                <div className="space-y-2"><Label>Date of Birth</Label><Input type="date" max={new Date().toISOString().split("T")[0]} value={form.date_of_birth} onChange={e => setForm(f => ({ ...f, date_of_birth: e.target.value }))} /></div>
                 <div className="space-y-2"><Label>Address</Label><Input value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))} /></div>
                 <div className="space-y-2"><Label>Notes</Label><Textarea value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} rows={2} /></div>
                 <Button type="submit" className="w-full" disabled={addPatient.isPending}>

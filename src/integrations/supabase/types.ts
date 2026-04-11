@@ -499,39 +499,57 @@ export type Database = {
           amount: number
           appointment_id: string | null
           clinic_id: string
+          coupon_code: string | null
           created_at: string
+          discount_amount: number
+          discount_percent: number
           due_date: string | null
           id: string
           notes: string | null
           paid_at: string | null
           patient_id: string
           status: Database["public"]["Enums"]["invoice_status"]
+          subtotal: number
+          tax_amount: number
+          tax_rate: number
           updated_at: string
         }
         Insert: {
           amount?: number
           appointment_id?: string | null
           clinic_id: string
+          coupon_code?: string | null
           created_at?: string
+          discount_amount?: number
+          discount_percent?: number
           due_date?: string | null
           id?: string
           notes?: string | null
           paid_at?: string | null
           patient_id: string
           status?: Database["public"]["Enums"]["invoice_status"]
+          subtotal?: number
+          tax_amount?: number
+          tax_rate?: number
           updated_at?: string
         }
         Update: {
           amount?: number
           appointment_id?: string | null
           clinic_id?: string
+          coupon_code?: string | null
           created_at?: string
+          discount_amount?: number
+          discount_percent?: number
           due_date?: string | null
           id?: string
           notes?: string | null
           paid_at?: string | null
           patient_id?: string
           status?: Database["public"]["Enums"]["invoice_status"]
+          subtotal?: number
+          tax_amount?: number
+          tax_rate?: number
           updated_at?: string
         }
         Relationships: [
