@@ -149,6 +149,7 @@ export default function Inventory() {
             <TabsTrigger value="items"><Package className="h-4 w-4 mr-1" /> Items</TabsTrigger>
             <TabsTrigger value="alerts"><AlertTriangle className="h-4 w-4 mr-1" /> Alerts</TabsTrigger>
             <TabsTrigger value="history"><History className="h-4 w-4 mr-1" /> History</TabsTrigger>
+            <TabsTrigger value="mappings"><Link2 className="h-4 w-4 mr-1" /> Mappings</TabsTrigger>
           </TabsList>
           <Dialog open={addOpen} onOpenChange={setAddOpen}>
             <DialogTrigger asChild><Button size="sm"><Plus className="h-4 w-4 mr-1" /> Add Item</Button></DialogTrigger>
