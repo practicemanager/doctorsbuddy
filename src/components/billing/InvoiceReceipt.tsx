@@ -13,10 +13,13 @@ interface InvoiceReceiptProps {
 export default function InvoiceReceipt({ invoice, clinic, patient, items = [] }: InvoiceReceiptProps) {
   const printRef = useRef<HTMLDivElement>(null);
 
-  const amount = Number(invoice.amount);
-  const gstRate = 0; // Can be made configurable
-  const gstAmount = amount * gstRate / 100;
-  const totalWithGst = amount + gstAmount;
+  const subtotal = Number(invoice.subtotal || invoice.amount);
+  const discountAmt = Number(invoice.discount_amount || 0);
+  const discountPct = Number(invoice.discount_percent || 0);
+  const discountTotal = discountAmt + (subtotal * discountPct / 100);
+  const taxRate = Number(invoice.tax_rate || 0);
+  const taxAmount = Number(invoice.tax_amount || 0);
+  const totalAmount = Number(invoice.amount);
 
   const handlePrint = () => {
     const el = printRef.current;
