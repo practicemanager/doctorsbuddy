@@ -618,6 +618,67 @@ export type Database = {
           },
         ]
       }
+      patient_documents: {
+        Row: {
+          clinic_id: string
+          created_at: string
+          document_type: string
+          file_name: string
+          file_url: string
+          id: string
+          notes: string | null
+          patient_id: string
+          tooth_number: number | null
+          updated_at: string
+        }
+        Insert: {
+          clinic_id: string
+          created_at?: string
+          document_type?: string
+          file_name: string
+          file_url: string
+          id?: string
+          notes?: string | null
+          patient_id: string
+          tooth_number?: number | null
+          updated_at?: string
+        }
+        Update: {
+          clinic_id?: string
+          created_at?: string
+          document_type?: string
+          file_name?: string
+          file_url?: string
+          id?: string
+          notes?: string | null
+          patient_id?: string
+          tooth_number?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_documents_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "patient_documents_clinic_id_fkey"
+            columns: ["clinic_id"]
+            isOneToOne: false
+            referencedRelation: "clinics_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "patient_documents_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       patient_medical_history: {
         Row: {
           allergies: string[] | null
@@ -716,6 +777,7 @@ export type Database = {
           full_name: string
           id: string
           notes: string | null
+          op_number: string | null
           phone: string | null
           updated_at: string
         }
@@ -728,6 +790,7 @@ export type Database = {
           full_name: string
           id?: string
           notes?: string | null
+          op_number?: string | null
           phone?: string | null
           updated_at?: string
         }
@@ -740,6 +803,7 @@ export type Database = {
           full_name?: string
           id?: string
           notes?: string | null
+          op_number?: string | null
           phone?: string | null
           updated_at?: string
         }
