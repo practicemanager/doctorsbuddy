@@ -443,7 +443,7 @@ export default function PatientsPage() {
             <Table>
               <TableHeader>
                <TableRow>
-437:                   <TableHead>OP #</TableHead>
+                  <TableHead>OP #</TableHead>
                   <TableHead>Patient Name</TableHead>
                   <TableHead>Phone</TableHead>
                   <TableHead>Age</TableHead>
