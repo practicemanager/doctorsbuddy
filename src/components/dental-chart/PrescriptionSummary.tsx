@@ -3,8 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Printer, Download, Share2, CheckCircle2 } from "lucide-react";
+import { Printer, Download, Share2, CheckCircle2, FileDown } from "lucide-react";
 import { toast } from "sonner";
+import jsPDF from "jspdf";
 import type { Medication } from "./MedicationPanel";
 
 interface PrescriptionSummaryProps {
@@ -51,17 +52,146 @@ export default function PrescriptionSummary({
     win.print();
   };
 
+  const handleDownloadPDF = () => {
+    const doc = new jsPDF();
+    let y = 15;
+    const lm = 15;
+    const pw = 180;
+
+    // Header
+    doc.setFontSize(16);
+    doc.setFont("helvetica", "bold");
+    doc.text(clinic?.name || "Dental Clinic", lm, y);
+    y += 6;
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "normal");
+    if (clinic?.address) { doc.text(clinic.address, lm, y); y += 4; }
+    if (clinic?.phone || clinic?.email) { doc.text(`${clinic?.phone || ""} · ${clinic?.email || ""}`, lm, y); y += 4; }
+
+    // Patient info on right
+    doc.setFontSize(9);
+    doc.text(`Date: ${new Date().toLocaleDateString()}`, lm + pw, 15, { align: "right" });
+    doc.text(`Patient: ${patient?.full_name || ""}`, lm + pw, 19, { align: "right" });
+    if (patient?.phone) doc.text(`Ph: ${patient.phone}`, lm + pw, 23, { align: "right" });
+
+    y += 2;
+    doc.setDrawColor(51);
+    doc.setLineWidth(0.5);
+    doc.line(lm, y, lm + pw, y);
+    y += 8;
+
+    // Chief Complaint
+    if (chiefComplaint) {
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "bold");
+      doc.text("Chief Complaint", lm, y); y += 5;
+      doc.setFontSize(9);
+      doc.setFont("helvetica", "normal");
+      const lines = doc.splitTextToSize(chiefComplaint, pw);
+      doc.text(lines, lm, y); y += lines.length * 4 + 4;
+    }
+
+    // Clinical notes
+    if (gumCondition && gumCondition !== "normal") { doc.text(`Gum: ${gumCondition}`, lm, y); y += 4; }
+    if (alignmentCondition && alignmentCondition !== "normal") { doc.text(`Alignment: ${alignmentCondition}`, lm, y); y += 4; }
+    if (diagnosisNotes) {
+      const lines = doc.splitTextToSize(`Clinical Notes: ${diagnosisNotes}`, pw);
+      doc.text(lines, lm, y); y += lines.length * 4 + 4;
+    }
+
+    // Dental findings table
+    if (items.length > 0) {
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "bold");
+      doc.text("Dental Findings & Treatment", lm, y); y += 6;
+      doc.setFontSize(8);
+      doc.setFont("helvetica", "normal");
+
+      // Table header
+      const cols = [lm, lm + 20, lm + 60, lm + 100, lm + 140];
+      const heads = ["Tooth", "Condition", "Treatment", "Status", "Cost"];
+      doc.setFillColor(245, 245, 245);
+      doc.rect(lm, y - 3, pw, 6, "F");
+      heads.forEach((h, i) => doc.text(h, cols[i], y));
+      y += 5;
+
+      items.forEach((item: any) => {
+        if (y > 270) { doc.addPage(); y = 15; }
+        doc.text(String(item.tooth_number), cols[0], y);
+        doc.text(item.condition || "—", cols[1], y);
+        doc.text(item.treatment || "—", cols[2], y);
+        doc.text(item.treatment_status?.replace("_", " ") || "—", cols[3], y);
+        doc.text(item.cost > 0 ? `₹${Number(item.cost).toLocaleString()}` : "—", cols[4], y);
+        y += 5;
+      });
+      doc.setFont("helvetica", "bold");
+      doc.text("Total", cols[3], y);
+      doc.text(`₹${totalCost.toLocaleString()}`, cols[4], y);
+      y += 8;
+      doc.setFont("helvetica", "normal");
+    }
+
+    // Treatment Plan
+    if (treatmentPlan) {
+      if (y > 250) { doc.addPage(); y = 15; }
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "bold");
+      doc.text("Treatment Plan", lm, y); y += 5;
+      doc.setFontSize(9);
+      doc.setFont("helvetica", "normal");
+      const lines = doc.splitTextToSize(treatmentPlan, pw);
+      doc.text(lines, lm, y); y += lines.length * 4 + 4;
+    }
+
+    // Medications
+    if (medications.length > 0) {
+      if (y > 240) { doc.addPage(); y = 15; }
+      doc.setFontSize(14);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(37, 99, 235);
+      doc.text("℞", lm, y);
+      doc.setTextColor(0);
+      doc.setFontSize(11);
+      doc.text("Medications", lm + 10, y); y += 6;
+      doc.setFontSize(8);
+      doc.setFont("helvetica", "normal");
+
+      const mcols = [lm, lm + 10, lm + 70, lm + 110, lm + 145];
+      const mheads = ["#", "Medicine", "Dosage", "Frequency", "Duration"];
+      doc.setFillColor(245, 245, 245);
+      doc.rect(lm, y - 3, pw, 6, "F");
+      mheads.forEach((h, i) => doc.text(h, mcols[i], y));
+      y += 5;
+
+      medications.forEach((med, idx) => {
+        if (y > 270) { doc.addPage(); y = 15; }
+        doc.text(String(idx + 1), mcols[0], y);
+        doc.text(med.name, mcols[1], y);
+        doc.text(med.dosage, mcols[2], y);
+        doc.text(med.frequency, mcols[3], y);
+        doc.text(med.duration, mcols[4], y);
+        y += 5;
+      });
+      y += 4;
+    }
+
+    // Signature
+    if (y > 260) { doc.addPage(); y = 15; }
+    y += 10;
+    doc.setFontSize(8);
+    doc.setTextColor(153);
+    doc.text(`Generated on ${new Date().toLocaleString()}`, lm, y);
+    doc.setTextColor(0);
+    doc.line(lm + 120, y - 2, lm + pw, y - 2);
+    doc.setFontSize(9);
+    doc.text("Doctor's Signature", lm + 130, y + 3);
+
+    doc.save(`Prescription_${patient?.full_name}_${new Date().toISOString().split("T")[0]}.pdf`);
+    toast.success("PDF downloaded");
+  };
+
   const handleDownload = () => {
-    const printContent = printRef.current;
-    if (!printContent) return;
-    const blob = new Blob([`<html><body style="font-family:system-ui;padding:20px;font-size:12px">${printContent.innerHTML}</body></html>`], { type: "text/html" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `Prescription_${patient?.full_name}_${new Date().toISOString().split("T")[0]}.html`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast.success("Prescription downloaded");
+    handleDownloadPDF();
   };
 
   const handleShare = async () => {

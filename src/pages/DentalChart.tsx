@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import DashboardLayout from "@/components/DashboardLayout";
 import DentalChartGrid from "@/components/dental-chart/DentalChartGrid";
 import UnifiedToothEntry from "@/components/dental-chart/UnifiedToothEntry";
+import TreatmentQuickPanel from "@/components/dental-chart/TreatmentQuickPanel";
 import ClinicalExamPanel from "@/components/dental-chart/ClinicalExamPanel";
 import MedicationPanel, { type Medication } from "@/components/dental-chart/MedicationPanel";
 import PrescriptionSummary from "@/components/dental-chart/PrescriptionSummary";
@@ -217,8 +218,8 @@ export default function DentalChartPage() {
                 />
               </div>
 
-              {/* Right column - Unified tooth entry */}
-              <div>
+              {/* Right column - Unified tooth entry + Quick Panel */}
+              <div className="space-y-3">
                 {selectedTooth && prescriptionId ? (
                   <UnifiedToothEntry
                     prescriptionId={prescriptionId}
@@ -240,6 +241,16 @@ export default function DentalChartPage() {
                     </CardContent>
                   </Card>
                 )}
+                <TreatmentQuickPanel
+                  patientId={patientId}
+                  clinicId={clinicId}
+                  toothNumber={selectedTooth}
+                  toothRecordId={selectedRecord?.id}
+                  onUpdate={() => {
+                    refetchRecords();
+                    queryClient.invalidateQueries({ queryKey: ["prescription-items-all"] });
+                  }}
+                />
               </div>
             </div>
           </TabsContent>

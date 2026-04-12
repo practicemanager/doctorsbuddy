@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import MedicalHistoryTab from "@/components/patients/MedicalHistoryTab";
 import VisitHistoryTab from "@/components/patients/VisitHistoryTab";
+import DocumentsTab from "@/components/patients/DocumentsTab";
 
 const TREATMENT_STATUS_COLORS: Record<string, string> = {
   planned: "bg-primary/10 text-primary border-primary/30",
@@ -97,6 +98,7 @@ function PatientProfile({ patient, clinicId, onBack }: { patient: any; clinicId:
               <div>
                 <div className="flex items-center gap-2">
                   <h2 className="font-heading text-xl font-bold text-foreground">{patient.full_name}</h2>
+                  {patient.op_number && <Badge variant="outline" className="font-mono text-xs">{patient.op_number}</Badge>}
                   <Badge className="bg-success/10 text-success border-0">Active</Badge>
                 </div>
                 <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground flex-wrap">
@@ -127,6 +129,7 @@ function PatientProfile({ patient, clinicId, onBack }: { patient: any; clinicId:
           <TabsTrigger value="treatments">Treatments</TabsTrigger>
           <TabsTrigger value="appointments">Appointments</TabsTrigger>
           <TabsTrigger value="billing">Billing</TabsTrigger>
+          <TabsTrigger value="documents" className="gap-1"><FileText className="h-3 w-3" />Documents</TabsTrigger>
           <TabsTrigger value="notes">Notes</TabsTrigger>
         </TabsList>
 
@@ -275,6 +278,10 @@ function PatientProfile({ patient, clinicId, onBack }: { patient: any; clinicId:
           </Card>
         </TabsContent>
 
+        <TabsContent value="documents" className="mt-4">
+          <DocumentsTab patientId={patient.id} clinicId={clinicId} />
+        </TabsContent>
+
         <TabsContent value="notes" className="mt-4">
           <Card className="shadow-card border-0">
             <CardContent className="p-6">
@@ -301,7 +308,9 @@ export default function PatientsPage() {
     queryFn: async () => {
       if (!clinicId) return [];
       let q = supabase.from("patients").select("*").eq("clinic_id", clinicId).order("created_at", { ascending: false });
-      if (search) q = q.ilike("full_name", `%${search}%`);
+      if (search) {
+        q = q.or(`full_name.ilike.%${search}%,op_number.ilike.%${search}%,phone.ilike.%${search}%`);
+      }
       const { data } = await q;
       return data ?? [];
     },
@@ -433,7 +442,8 @@ export default function PatientsPage() {
           <CardContent className="p-0">
             <Table>
               <TableHeader>
-                <TableRow>
+               <TableRow>
+                  <TableHead>OP #</TableHead>
                   <TableHead>Patient Name</TableHead>
                   <TableHead>Phone</TableHead>
                   <TableHead>Age</TableHead>
@@ -444,11 +454,12 @@ export default function PatientsPage() {
               </TableHeader>
               <TableBody>
                 {isLoading ? (
-                  <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">Loading...</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={8} className="text-center py-8 text-muted-foreground">Loading...</TableCell></TableRow>
                 ) : !patients?.length ? (
-                  <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">No patients yet</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={8} className="text-center py-8 text-muted-foreground">No patients yet</TableCell></TableRow>
                 ) : patients.map(p => (
                   <TableRow key={p.id} className="cursor-pointer hover:bg-muted/50" onClick={() => setSelectedPatient(p)}>
+                    <TableCell className="font-mono text-xs text-muted-foreground">{(p as any).op_number || "—"}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-3">
                         <div className="flex h-8 w-8 items-center justify-center rounded-full gradient-primary text-xs font-bold text-primary-foreground">
