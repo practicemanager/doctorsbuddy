@@ -454,11 +454,12 @@ export default function PatientsPage() {
               </TableHeader>
               <TableBody>
                 {isLoading ? (
-                  <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">Loading...</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={8} className="text-center py-8 text-muted-foreground">Loading...</TableCell></TableRow>
                 ) : !patients?.length ? (
-                  <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">No patients yet</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={8} className="text-center py-8 text-muted-foreground">No patients yet</TableCell></TableRow>
                 ) : patients.map(p => (
                   <TableRow key={p.id} className="cursor-pointer hover:bg-muted/50" onClick={() => setSelectedPatient(p)}>
+                    <TableCell className="font-mono text-xs text-muted-foreground">{(p as any).op_number || "—"}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-3">
                         <div className="flex h-8 w-8 items-center justify-center rounded-full gradient-primary text-xs font-bold text-primary-foreground">
