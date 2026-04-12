@@ -23,6 +23,7 @@ import TreatmentCosting from "./pages/TreatmentCosting";
 import Finance from "./pages/Finance";
 import Reports from "./pages/Reports";
 import PatientSelfRegister from "./pages/PatientSelfRegister";
+import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +38,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/onboarding" element={<AuthOnlyRoute><Onboarding /></AuthOnlyRoute>} />
             <Route path="/register" element={<PatientSelfRegister />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
