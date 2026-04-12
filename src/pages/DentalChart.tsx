@@ -218,8 +218,8 @@ export default function DentalChartPage() {
                 />
               </div>
 
-              {/* Right column - Unified tooth entry */}
-              <div>
+              {/* Right column - Unified tooth entry + Quick Panel */}
+              <div className="space-y-3">
                 {selectedTooth && prescriptionId ? (
                   <UnifiedToothEntry
                     prescriptionId={prescriptionId}
@@ -241,6 +241,16 @@ export default function DentalChartPage() {
                     </CardContent>
                   </Card>
                 )}
+                <TreatmentQuickPanel
+                  patientId={patientId}
+                  clinicId={clinicId}
+                  toothNumber={selectedTooth}
+                  toothRecordId={selectedRecord?.id}
+                  onUpdate={() => {
+                    refetchRecords();
+                    queryClient.invalidateQueries({ queryKey: ["prescription-items-all"] });
+                  }}
+                />
               </div>
             </div>
           </TabsContent>
