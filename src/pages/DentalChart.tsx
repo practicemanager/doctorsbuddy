@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import DashboardLayout from "@/components/DashboardLayout";
 import DentalChartGrid from "@/components/dental-chart/DentalChartGrid";
 import UnifiedToothEntry from "@/components/dental-chart/UnifiedToothEntry";
+import TreatmentQuickPanel from "@/components/dental-chart/TreatmentQuickPanel";
 import ClinicalExamPanel from "@/components/dental-chart/ClinicalExamPanel";
 import MedicationPanel, { type Medication } from "@/components/dental-chart/MedicationPanel";
 import PrescriptionSummary from "@/components/dental-chart/PrescriptionSummary";
