@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import MedicalHistoryTab from "@/components/patients/MedicalHistoryTab";
 import VisitHistoryTab from "@/components/patients/VisitHistoryTab";
+import DocumentsTab from "@/components/patients/DocumentsTab";
 
 const TREATMENT_STATUS_COLORS: Record<string, string> = {
   planned: "bg-primary/10 text-primary border-primary/30",
