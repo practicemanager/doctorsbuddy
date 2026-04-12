@@ -98,6 +98,7 @@ function PatientProfile({ patient, clinicId, onBack }: { patient: any; clinicId:
               <div>
                 <div className="flex items-center gap-2">
                   <h2 className="font-heading text-xl font-bold text-foreground">{patient.full_name}</h2>
+                  {patient.op_number && <Badge variant="outline" className="font-mono text-xs">{patient.op_number}</Badge>}
                   <Badge className="bg-success/10 text-success border-0">Active</Badge>
                 </div>
                 <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground flex-wrap">
@@ -128,6 +129,7 @@ function PatientProfile({ patient, clinicId, onBack }: { patient: any; clinicId:
           <TabsTrigger value="treatments">Treatments</TabsTrigger>
           <TabsTrigger value="appointments">Appointments</TabsTrigger>
           <TabsTrigger value="billing">Billing</TabsTrigger>
+          <TabsTrigger value="documents" className="gap-1"><FileText className="h-3 w-3" />Documents</TabsTrigger>
           <TabsTrigger value="notes">Notes</TabsTrigger>
         </TabsList>
 
@@ -274,6 +276,10 @@ function PatientProfile({ patient, clinicId, onBack }: { patient: any; clinicId:
               </Table>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="documents" className="mt-4">
+          <DocumentsTab patientId={patient.id} clinicId={clinicId} />
         </TabsContent>
 
         <TabsContent value="notes" className="mt-4">
