@@ -1472,6 +1472,10 @@ export type Database = {
         Returns: number
       }
       get_user_clinic_id: { Args: never; Returns: string }
+      update_own_profile: {
+        Args: { p_avatar_url?: string; p_full_name?: string }
+        Returns: undefined
+      }
     }
     Enums: {
       appointment_status:
